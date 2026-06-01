@@ -1,0 +1,2229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SQL — The Complete Interview Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,500;0,6..72,700;1,6..72,400&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f0e6;
+    --bg-2: #ebe5d3;
+    --ink: #1e1318;
+    --ink-soft: #564148;
+    --rule: #d4c9b3;
+    --accent: #6b2737;
+    --accent-2: #b9810f;
+    --code-bg: #1e1318;
+    --code-ink: #ece4d0;
+    --easy: #4a7c2e;
+    --medium: #b9810f;
+    --hard: #6b2737;
+    --display: 'Newsreader', Georgia, serif;
+    --sans: 'Manrope', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(rgba(30,19,24,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,19,24,0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    max-width: 1440px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  aside {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px 22px;
+    border-right: 1px solid var(--rule);
+    background: var(--bg-2);
+    font-size: 13px;
+  }
+  aside::-webkit-scrollbar { width: 6px; }
+  aside::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+  .brand {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .brand em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .brand-sub {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+
+  nav .group-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 20px 0 8px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+  }
+  nav a {
+    display: block;
+    padding: 4px 0 4px 12px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  nav a:hover {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    padding-left: 16px;
+  }
+
+  main {
+    padding: 56px 64px 120px 64px;
+    max-width: 920px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 72px;
+    line-height: 1.0;
+    letter-spacing: -0.035em;
+    margin: 0 0 24px 0;
+  }
+  h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .lede {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 660px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin: 88px 0 10px 0;
+    color: var(--ink);
+  }
+  h2::before {
+    content: attr(data-num);
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  h3 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    margin: 40px 0 12px 0;
+    color: var(--ink);
+  }
+  h4 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 15px;
+    margin: 24px 0 8px 0;
+    color: var(--ink);
+  }
+
+  p { margin: 0 0 16px 0; }
+  strong { font-weight: 700; color: var(--ink); }
+  em { font-style: italic; }
+
+  ul, ol { margin: 0 0 16px 0; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: rgba(30, 19, 24, 0.07);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 20px 24px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12.8px;
+    line-height: 1.7;
+    margin: 16px 0 20px 0;
+    border-left: 3px solid var(--accent);
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+
+  .signal {
+    background: var(--bg-2);
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .signal-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .signal p:last-child { margin-bottom: 0; }
+
+  .example {
+    background: #f5e9d0;
+    border: 1px solid #d4ba80;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 4px;
+  }
+  .example-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a5a00;
+    margin-bottom: 6px;
+  }
+  .example p:last-child { margin-bottom: 0; }
+
+  .gotcha {
+    background: #fde7d8;
+    border-left: 3px solid var(--accent-2);
+    padding: 14px 20px;
+    margin: 16px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .gotcha-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 6px;
+  }
+  .gotcha p:last-child { margin-bottom: 0; }
+
+  .practice {
+    margin: 24px 0 16px 0;
+    background: var(--bg-2);
+    border-radius: 6px;
+    padding: 4px 0;
+    overflow: hidden;
+  }
+  .practice-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 20px 8px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .practice-title::before {
+    content: "▸";
+    color: var(--accent-2);
+  }
+  table.lc {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.lc tr { border-bottom: 1px solid var(--rule); }
+  table.lc tr:last-child { border-bottom: 0; }
+  table.lc td { padding: 10px 18px; vertical-align: middle; }
+  table.lc td:first-child {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    width: 60px;
+  }
+  table.lc td:nth-child(2) { font-weight: 500; }
+  table.lc td:last-child {
+    text-align: right;
+    width: 80px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .easy { color: var(--easy); }
+  .med  { color: var(--medium); }
+  .hard { color: var(--hard); }
+
+  table.lc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--ink-soft);
+  }
+  table.lc a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .interview-q {
+    margin: 24px 0 16px 0;
+    background: var(--bg-2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .interview-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 20px 8px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .interview-title::before {
+    content: "?";
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+  .qa { padding: 12px 20px; border-bottom: 1px solid var(--rule); }
+  .qa:last-child { border-bottom: 0; }
+  .qa .q { font-weight: 600; font-size: 14.5px; margin-bottom: 4px; color: var(--ink); }
+  .qa .a { font-size: 14px; color: var(--ink-soft); margin: 0; }
+
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 14.5px;
+  }
+  .compare th, .compare td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .compare th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--bg-2);
+    font-weight: 500;
+  }
+
+  /* Result table style */
+  .result {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    background: white;
+    border: 1px solid var(--rule);
+  }
+  .result th, .result td {
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    text-align: left;
+  }
+  .result th {
+    background: var(--bg-2);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .diagram {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 22px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    border-radius: 4px;
+    margin: 16px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .tldr {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 22px 26px;
+    border-radius: 4px;
+    margin: 24px 0;
+  }
+  .tldr-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #d4a157;
+    margin-bottom: 8px;
+  }
+  .tldr p { margin: 0; font-family: var(--display); font-size: 17px; line-height: 1.55; }
+
+  hr.section-break {
+    border: 0;
+    height: 1px;
+    background: var(--rule);
+    margin: 64px 0;
+  }
+
+  @media (max-width: 920px) {
+    .wrap { grid-template-columns: 1fr; }
+    aside { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--rule); }
+    main { padding: 32px 22px 80px 22px; }
+    h1 { font-size: 42px; }
+    h2 { font-size: 28px; }
+  }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<aside>
+  <div class="brand">The <em>SQL</em><br/>Handbook</div>
+  <div class="brand-sub">Queries · Joins · Windows · Design</div>
+
+  <nav>
+    <div class="group-title">Foundations</div>
+    <a href="#what">01 · What is SQL</a>
+    <a href="#types">02 · Data Types</a>
+    <a href="#select">03 · SELECT Basics</a>
+    <a href="#where">04 · WHERE &amp; Operators</a>
+    <a href="#dml">05 · INSERT, UPDATE, DELETE</a>
+
+    <div class="group-title">Filtering</div>
+    <a href="#patterns">06 · LIKE, IN, BETWEEN</a>
+    <a href="#nulls">07 · NULL Handling</a>
+
+    <div class="group-title">Aggregation</div>
+    <a href="#aggs">08 · Aggregate Functions</a>
+    <a href="#groupby">09 · GROUP BY &amp; HAVING</a>
+
+    <div class="group-title">Joins</div>
+    <a href="#inner">10 · INNER JOIN</a>
+    <a href="#outer">11 · OUTER JOINs</a>
+    <a href="#self">12 · SELF &amp; CROSS JOIN</a>
+
+    <div class="group-title">Subqueries &amp; Sets</div>
+    <a href="#subq">13 · Subqueries</a>
+    <a href="#exists">14 · EXISTS, ANY, ALL</a>
+    <a href="#union">15 · UNION, INTERSECT</a>
+    <a href="#cte">16 · CTEs (WITH)</a>
+
+    <div class="group-title">Advanced SELECT</div>
+    <a href="#case">17 · CASE WHEN</a>
+    <a href="#window">18 · Window Functions</a>
+    <a href="#rank">19 · Ranking Functions</a>
+    <a href="#laglead">20 · LAG, LEAD &amp; Offsets</a>
+
+    <div class="group-title">Functions</div>
+    <a href="#string">21 · String Functions</a>
+    <a href="#date">22 · Date / Time Functions</a>
+
+    <div class="group-title">Database Design</div>
+    <a href="#schema">23 · Schema, Keys, Constraints</a>
+    <a href="#normal">24 · Normalization</a>
+    <a href="#index">25 · Indexes</a>
+    <a href="#views">26 · Views</a>
+    <a href="#procs">27 · Procedures &amp; Triggers</a>
+
+    <div class="group-title">Transactions</div>
+    <a href="#acid">28 · Transactions &amp; ACID</a>
+    <a href="#isolation">29 · Isolation Levels</a>
+    <a href="#lock">30 · Locking &amp; Deadlocks</a>
+
+    <div class="group-title">Performance</div>
+    <a href="#explain">31 · Query Optimization</a>
+
+    <div class="group-title">Closing</div>
+    <a href="#patterns2">32 · Interview Patterns</a>
+    <a href="#cheat">33 · Cheatsheet &amp; Plan</a>
+  </nav>
+</aside>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">The Complete SQL Interview Handbook · 2026</div>
+  <h1>SQL,<br/><em>from query to schema.</em></h1>
+  <p class="lede">Every SQL concept an interviewer can ask you — from your first <code>SELECT *</code> to window functions, transactions, and query planning. Plain English, real queries, and the LeetCode problems to drill it all into muscle memory.</p>
+</section>
+
+<!-- 01 — WHAT IS SQL -->
+<h2 id="what" data-num="Chapter 01">What is SQL</h2>
+
+<p><strong>SQL</strong> (Structured Query Language) is the language used to talk to relational databases. You ask the database for what you want — it figures out how to get it. That's the magic of SQL: it's <em>declarative</em>, not <em>imperative</em>.</p>
+
+<p>A <strong>relational database</strong> stores data in tables — like spreadsheets — with rows and columns. Tables can reference each other through shared values (keys). Examples: MySQL, PostgreSQL, Oracle, SQL Server, SQLite.</p>
+
+<h3>Why SQL is everywhere</h3>
+<ul>
+  <li>50+ years old, still the dominant data language</li>
+  <li>Powers almost every business application (banking, e-commerce, CRM)</li>
+  <li>Same query syntax works across all major databases (95% portable)</li>
+  <li>Data analysts, backend devs, data engineers all need it</li>
+</ul>
+
+<h3>The five SQL sub-languages</h3>
+
+<table class="compare">
+  <tr><th>Name</th><th>Stands for</th><th>Commands</th><th>What it does</th></tr>
+  <tr><td>DDL</td><td>Data Definition</td><td>CREATE, ALTER, DROP, TRUNCATE</td><td>Define schema (tables, columns)</td></tr>
+  <tr><td>DML</td><td>Data Manipulation</td><td>SELECT, INSERT, UPDATE, DELETE</td><td>Read &amp; modify rows</td></tr>
+  <tr><td>DCL</td><td>Data Control</td><td>GRANT, REVOKE</td><td>Permissions</td></tr>
+  <tr><td>TCL</td><td>Transaction Control</td><td>COMMIT, ROLLBACK, SAVEPOINT</td><td>Manage transactions</td></tr>
+  <tr><td>DQL</td><td>Data Query</td><td>SELECT</td><td>Read-only queries (subset of DML)</td></tr>
+</table>
+
+<div class="example">
+  <div class="example-title">SQL vs NoSQL — when to use what</div>
+  <p>SQL: structured data, complex relationships, strong consistency, financial transactions. NoSQL: flexible schema, massive scale, simple lookups, document storage. Most interviews want you to know SQL inside out — it's the foundation.</p>
+</div>
+
+
+<!-- 02 — DATA TYPES -->
+<h2 id="types" data-num="Chapter 02">Data Types</h2>
+
+<p>Every column in a table has a type. Types vary slightly across databases, but the categories are universal.</p>
+
+<h3>Numeric</h3>
+<table class="compare">
+  <tr><th>Type</th><th>Use for</th></tr>
+  <tr><td><code>INT</code> / <code>BIGINT</code></td><td>Whole numbers (4 / 8 bytes)</td></tr>
+  <tr><td><code>SMALLINT</code> / <code>TINYINT</code></td><td>Small whole numbers</td></tr>
+  <tr><td><code>DECIMAL(p, s)</code> / <code>NUMERIC</code></td><td>Exact decimals (money!) — p digits total, s after decimal</td></tr>
+  <tr><td><code>FLOAT</code> / <code>DOUBLE</code></td><td>Approximate decimals (never use for money)</td></tr>
+</table>
+
+<h3>Text</h3>
+<table class="compare">
+  <tr><th>Type</th><th>Use for</th></tr>
+  <tr><td><code>CHAR(n)</code></td><td>Fixed length, padded with spaces. Good for codes (e.g. country code)</td></tr>
+  <tr><td><code>VARCHAR(n)</code></td><td>Variable length up to n. The default for strings</td></tr>
+  <tr><td><code>TEXT</code></td><td>Unlimited length, big text bodies (articles, comments)</td></tr>
+</table>
+
+<h3>Date &amp; Time</h3>
+<table class="compare">
+  <tr><th>Type</th><th>Use for</th></tr>
+  <tr><td><code>DATE</code></td><td>YYYY-MM-DD</td></tr>
+  <tr><td><code>TIME</code></td><td>HH:MM:SS</td></tr>
+  <tr><td><code>DATETIME</code> / <code>TIMESTAMP</code></td><td>Both, with or without timezone</td></tr>
+</table>
+
+<h3>Others</h3>
+<ul>
+  <li><code>BOOLEAN</code> — true/false (some DBs use TINYINT(1))</li>
+  <li><code>JSON</code> — structured JSON documents (MySQL 5.7+, PostgreSQL)</li>
+  <li><code>BLOB</code> — binary large object (files, images)</li>
+  <li><code>UUID</code> — universally unique identifier</li>
+</ul>
+
+<div class="gotcha">
+  <div class="gotcha-title">Money rule</div>
+  <p>Never store money as <code>FLOAT</code> or <code>DOUBLE</code>. Floating-point math is approximate — you'll lose cents over millions of transactions. Always use <code>DECIMAL</code>.</p>
+</div>
+
+
+<!-- 03 — SELECT -->
+<h2 id="select" data-num="Chapter 03">SELECT Basics</h2>
+
+<p><code>SELECT</code> is the workhorse of SQL — it reads data from tables. Let's start with a simple table.</p>
+
+<table class="result">
+  <tr><th>id</th><th>name</th><th>department</th><th>salary</th></tr>
+  <tr><td>1</td><td>Alice</td><td>Engineering</td><td>90000</td></tr>
+  <tr><td>2</td><td>Bob</td><td>Engineering</td><td>85000</td></tr>
+  <tr><td>3</td><td>Carol</td><td>Sales</td><td>75000</td></tr>
+  <tr><td>4</td><td>Dan</td><td>Marketing</td><td>70000</td></tr>
+</table>
+
+<pre><code>-- All columns, all rows
+SELECT * FROM employees;
+
+-- Specific columns
+SELECT name, salary FROM employees;
+
+-- Aliases (rename in output)
+SELECT name AS employee_name, salary AS pay
+FROM employees;</code></pre>
+
+<h3>DISTINCT — remove duplicates</h3>
+<pre><code>SELECT DISTINCT department FROM employees;
+-- Engineering, Sales, Marketing</code></pre>
+
+<h3>ORDER BY — sorting</h3>
+<pre><code>SELECT name, salary FROM employees
+ORDER BY salary DESC;            -- highest first
+
+-- Multiple columns
+SELECT name, department, salary FROM employees
+ORDER BY department ASC, salary DESC;</code></pre>
+
+<h3>LIMIT / OFFSET — pagination</h3>
+<pre><code>-- Top 3 highest paid
+SELECT name, salary FROM employees
+ORDER BY salary DESC
+LIMIT 3;
+
+-- Page 2 of results (5 per page)
+SELECT * FROM employees
+ORDER BY id
+LIMIT 5 OFFSET 5;</code></pre>
+
+<div class="signal">
+  <div class="signal-title">SQL syntax order vs execution order</div>
+  <p>You <em>write</em>: <code>SELECT … FROM … WHERE … GROUP BY … HAVING … ORDER BY … LIMIT …</code><br/>The DB <em>executes</em>: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. That's why you can't use a column alias from SELECT in WHERE — it doesn't exist yet.</p>
+</div>
+
+<div class="practice">
+  <div class="practice-title">5 LeetCode Problems — SELECT Basics</div>
+  <table class="lc">
+    <tr><td>#595</td><td><a href="https://leetcode.com/problems/big-countries/" target="_blank">Big Countries</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1148</td><td><a href="https://leetcode.com/problems/article-views-i/" target="_blank">Article Views I</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1683</td><td><a href="https://leetcode.com/problems/invalid-tweets/" target="_blank">Invalid Tweets</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1741</td><td><a href="https://leetcode.com/problems/find-total-time-spent-by-each-employee/" target="_blank">Total Time Spent by Each Employee</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1873</td><td><a href="https://leetcode.com/problems/calculate-special-bonus/" target="_blank">Calculate Special Bonus</a></td><td class="easy">Easy</td></tr>
+  </table>
+</div>
+
+
+<!-- 04 — WHERE -->
+<h2 id="where" data-num="Chapter 04">WHERE &amp; Operators</h2>
+
+<p><code>WHERE</code> filters rows. Only rows matching the condition are returned.</p>
+
+<pre><code>SELECT * FROM employees WHERE salary &gt; 80000;
+SELECT * FROM employees WHERE department = 'Engineering';
+SELECT * FROM employees WHERE salary BETWEEN 70000 AND 85000;</code></pre>
+
+<h3>Comparison operators</h3>
+<table class="compare">
+  <tr><th>Operator</th><th>Meaning</th></tr>
+  <tr><td><code>=</code></td><td>Equal</td></tr>
+  <tr><td><code>!=</code> or <code>&lt;&gt;</code></td><td>Not equal</td></tr>
+  <tr><td><code>&lt; &gt; &lt;= &gt;=</code></td><td>Less / greater than (or equal)</td></tr>
+  <tr><td><code>BETWEEN x AND y</code></td><td>Inclusive range</td></tr>
+  <tr><td><code>IN (a, b, c)</code></td><td>Match any in list</td></tr>
+  <tr><td><code>LIKE 'pattern'</code></td><td>Pattern match</td></tr>
+  <tr><td><code>IS NULL</code> / <code>IS NOT NULL</code></td><td>Null check</td></tr>
+</table>
+
+<h3>Logical operators</h3>
+<pre><code>-- AND, OR, NOT
+SELECT * FROM employees
+WHERE department = 'Engineering'
+  AND salary &gt; 80000;
+
+SELECT * FROM employees
+WHERE department = 'Sales' OR department = 'Marketing';
+
+-- Same as above but cleaner:
+SELECT * FROM employees
+WHERE department IN ('Sales', 'Marketing');
+
+SELECT * FROM employees
+WHERE NOT department = 'Engineering';</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">AND vs OR precedence</div>
+  <p>AND has higher precedence than OR. <code>a OR b AND c</code> is parsed as <code>a OR (b AND c)</code>. When in doubt, parenthesize: <code>(a OR b) AND c</code>.</p>
+</div>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Why doesn't <code>WHERE column = NULL</code> work?</div><div class="a">NULL represents "unknown" — and unknown = anything (even unknown) is also unknown. Use <code>IS NULL</code> instead.</div></div>
+  <div class="qa"><div class="q">Difference between <code>BETWEEN</code> and using <code>&gt;= AND &lt;=</code>?</div><div class="a">None functionally — BETWEEN is shorthand. Both are inclusive of the endpoints.</div></div>
+</div>
+
+
+<!-- 05 — DML -->
+<h2 id="dml" data-num="Chapter 05">INSERT, UPDATE, DELETE</h2>
+
+<h3>INSERT — add rows</h3>
+<pre><code>-- Single row
+INSERT INTO employees (name, department, salary)
+VALUES ('Eve', 'Engineering', 95000);
+
+-- Multiple rows
+INSERT INTO employees (name, department, salary)
+VALUES
+    ('Frank', 'Sales', 65000),
+    ('Grace', 'Marketing', 72000);
+
+-- Insert from a query
+INSERT INTO archive_employees
+SELECT * FROM employees WHERE department = 'Sales';</code></pre>
+
+<h3>UPDATE — modify rows</h3>
+<pre><code>-- Give Alice a raise
+UPDATE employees
+SET salary = 100000
+WHERE name = 'Alice';
+
+-- Multiple columns
+UPDATE employees
+SET salary = salary * 1.1,
+    department = 'Senior Engineering'
+WHERE department = 'Engineering' AND salary &gt; 85000;</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">UPDATE without WHERE = disaster</div>
+  <p><code>UPDATE employees SET salary = 0</code> — without a WHERE — sets EVERY salary to 0. Always preview your filter with a SELECT first. Some DBs have a "safe mode" that blocks UPDATE/DELETE without WHERE.</p>
+</div>
+
+<h3>DELETE — remove rows</h3>
+<pre><code>-- Specific rows
+DELETE FROM employees WHERE department = 'Marketing';
+
+-- All rows (table structure remains)
+DELETE FROM employees;</code></pre>
+
+<h3>DELETE vs TRUNCATE vs DROP</h3>
+<table class="compare">
+  <tr><th>Command</th><th>What it does</th><th>Speed</th><th>Rollback</th></tr>
+  <tr><td><code>DELETE FROM t</code></td><td>Removes rows (logs each)</td><td>Slow</td><td>Yes</td></tr>
+  <tr><td><code>TRUNCATE TABLE t</code></td><td>Removes all rows (no logging)</td><td>Fast</td><td>Usually no</td></tr>
+  <tr><td><code>DROP TABLE t</code></td><td>Deletes the entire table</td><td>Instant</td><td>No</td></tr>
+</table>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">DELETE vs TRUNCATE vs DROP?</div><div class="a">DELETE removes rows (can have WHERE, slow, logged, rollback possible). TRUNCATE removes all rows fast (no WHERE, minimal logging). DROP removes the entire table including its definition.</div></div>
+</div>
+
+
+<!-- 06 — PATTERNS -->
+<h2 id="patterns" data-num="Chapter 06">Pattern Matching — LIKE, IN, BETWEEN</h2>
+
+<h3>LIKE — string patterns</h3>
+<pre><code>-- Names starting with 'A'
+SELECT * FROM employees WHERE name LIKE 'A%';
+
+-- Names ending with 'e'
+SELECT * FROM employees WHERE name LIKE '%e';
+
+-- Names with 'li' anywhere
+SELECT * FROM employees WHERE name LIKE '%li%';
+
+-- 4-letter names starting with 'A'
+SELECT * FROM employees WHERE name LIKE 'A___';</code></pre>
+
+<h3>Wildcards</h3>
+<table class="compare">
+  <tr><th>Wildcard</th><th>Matches</th></tr>
+  <tr><td><code>%</code></td><td>Any sequence of characters (including zero)</td></tr>
+  <tr><td><code>_</code></td><td>Exactly one character</td></tr>
+</table>
+
+<p>Case sensitivity depends on the DB. PostgreSQL is case-sensitive; MySQL is case-insensitive by default. Use <code>ILIKE</code> in PostgreSQL for case-insensitive, or wrap with <code>LOWER()</code>.</p>
+
+<h3>IN — match against a list</h3>
+<pre><code>SELECT * FROM employees
+WHERE department IN ('Engineering', 'Sales', 'Marketing');
+
+-- IN with a subquery
+SELECT * FROM employees
+WHERE department IN (
+    SELECT name FROM departments WHERE budget &gt; 1000000
+);</code></pre>
+
+<h3>BETWEEN — inclusive range</h3>
+<pre><code>SELECT * FROM employees WHERE salary BETWEEN 70000 AND 90000;
+SELECT * FROM orders WHERE order_date BETWEEN '2024-01-01' AND '2024-12-31';</code></pre>
+
+<h3>Regular expressions (DB-specific)</h3>
+<pre><code>-- MySQL / PostgreSQL
+SELECT * FROM users WHERE email REGEXP '@gmail\\.com$';
+SELECT * FROM users WHERE email ~ '@gmail\\.com$';     -- PostgreSQL</code></pre>
+
+
+<!-- 07 — NULLS -->
+<h2 id="nulls" data-num="Chapter 07">NULL Handling</h2>
+
+<p><code>NULL</code> means "unknown" — not zero, not empty string. NULL behavior trips up everyone.</p>
+
+<h3>The NULL rules</h3>
+<pre><code>NULL = NULL          -- NULL (not true!)
+NULL != NULL         -- NULL
+NULL + 5             -- NULL
+NULL OR true         -- true
+NULL AND true        -- NULL
+NULL AND false       -- false  (because false stays false)</code></pre>
+
+<h3>Testing for NULL</h3>
+<pre><code>SELECT * FROM users WHERE phone IS NULL;
+SELECT * FROM users WHERE phone IS NOT NULL;
+
+-- WRONG — returns no rows
+SELECT * FROM users WHERE phone = NULL;</code></pre>
+
+<h3>NULL helper functions</h3>
+
+<table class="compare">
+  <tr><th>Function</th><th>What it does</th><th>Example</th></tr>
+  <tr><td><code>COALESCE(a, b, c)</code></td><td>Returns first non-NULL value</td><td><code>COALESCE(nickname, name, 'Anon')</code></td></tr>
+  <tr><td><code>IFNULL(a, b)</code></td><td>If a is NULL, return b (MySQL)</td><td><code>IFNULL(bonus, 0)</code></td></tr>
+  <tr><td><code>NVL(a, b)</code></td><td>Same as IFNULL (Oracle)</td><td><code>NVL(commission, 0)</code></td></tr>
+  <tr><td><code>NULLIF(a, b)</code></td><td>NULL if a = b, else a</td><td><code>NULLIF(price, 0)</code></td></tr>
+  <tr><td><code>ISNULL(x)</code></td><td>Boolean test (some DBs)</td><td>Use IS NULL instead</td></tr>
+</table>
+
+<pre><code>-- Replace NULLs with a default
+SELECT name, COALESCE(phone, 'N/A') AS contact
+FROM users;
+
+-- Sum salaries including those with NULL bonus
+SELECT name, salary + COALESCE(bonus, 0) AS total_pay
+FROM employees;</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">NULL in aggregates</div>
+  <p>Aggregate functions (SUM, AVG, COUNT) <em>ignore</em> NULL — except <code>COUNT(*)</code> which counts every row. So <code>COUNT(column)</code> can differ from <code>COUNT(*)</code> when there are NULLs.</p>
+</div>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Difference between NULL and empty string?</div><div class="a">NULL = unknown/missing; empty string = a known value that happens to be ""(zero length). <code>'' IS NOT NULL</code> is true.</div></div>
+  <div class="qa"><div class="q">Why <code>AVG</code> can give different results when there are NULLs?</div><div class="a">AVG ignores NULLs entirely — divides sum by count of non-NULL values. If you want NULLs treated as 0, use <code>AVG(COALESCE(col, 0))</code>.</div></div>
+</div>
+
+
+<!-- 08 — AGGREGATES -->
+<h2 id="aggs" data-num="Chapter 08">Aggregate Functions</h2>
+
+<p>Aggregates collapse many rows into a single value.</p>
+
+<table class="compare">
+  <tr><th>Function</th><th>What it returns</th></tr>
+  <tr><td><code>COUNT(*)</code></td><td>Total number of rows</td></tr>
+  <tr><td><code>COUNT(col)</code></td><td>Non-NULL values in col</td></tr>
+  <tr><td><code>COUNT(DISTINCT col)</code></td><td>Distinct non-NULL values</td></tr>
+  <tr><td><code>SUM(col)</code></td><td>Total</td></tr>
+  <tr><td><code>AVG(col)</code></td><td>Average (ignores NULL)</td></tr>
+  <tr><td><code>MIN(col)</code> / <code>MAX(col)</code></td><td>Smallest / largest</td></tr>
+</table>
+
+<pre><code>SELECT
+    COUNT(*) AS total_employees,
+    COUNT(DISTINCT department) AS departments,
+    SUM(salary) AS total_payroll,
+    AVG(salary) AS avg_salary,
+    MIN(salary) AS min_salary,
+    MAX(salary) AS max_salary
+FROM employees;</code></pre>
+
+<table class="result">
+  <tr><th>total_employees</th><th>departments</th><th>total_payroll</th><th>avg_salary</th></tr>
+  <tr><td>4</td><td>3</td><td>320000</td><td>80000</td></tr>
+</table>
+
+
+<!-- 09 — GROUP BY -->
+<h2 id="groupby" data-num="Chapter 09">GROUP BY &amp; HAVING</h2>
+
+<p>GROUP BY groups rows by one or more columns, then applies aggregates per group.</p>
+
+<pre><code>SELECT department,
+       COUNT(*) AS headcount,
+       AVG(salary) AS avg_salary,
+       MAX(salary) AS top_salary
+FROM employees
+GROUP BY department;</code></pre>
+
+<table class="result">
+  <tr><th>department</th><th>headcount</th><th>avg_salary</th><th>top_salary</th></tr>
+  <tr><td>Engineering</td><td>2</td><td>87500</td><td>90000</td></tr>
+  <tr><td>Sales</td><td>1</td><td>75000</td><td>75000</td></tr>
+  <tr><td>Marketing</td><td>1</td><td>70000</td><td>70000</td></tr>
+</table>
+
+<h3>The GROUP BY rule</h3>
+<p>Every non-aggregated column in SELECT must appear in GROUP BY. This is invalid:</p>
+<pre><code>-- ERROR — name is neither in GROUP BY nor an aggregate
+SELECT department, name, COUNT(*)
+FROM employees
+GROUP BY department;</code></pre>
+
+<h3>HAVING — filter on aggregates</h3>
+<p><code>WHERE</code> filters rows <em>before</em> grouping. <code>HAVING</code> filters groups <em>after</em>.</p>
+
+<pre><code>-- Departments with more than 1 employee earning &gt; 60k
+SELECT department, COUNT(*) AS headcount
+FROM employees
+WHERE salary &gt; 60000
+GROUP BY department
+HAVING COUNT(*) &gt; 1;</code></pre>
+
+<table class="compare">
+  <tr><th></th><th>WHERE</th><th>HAVING</th></tr>
+  <tr><td>Filters</td><td>Rows</td><td>Groups</td></tr>
+  <tr><td>Runs</td><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
+  <tr><td>Can use aggregates?</td><td>No</td><td>Yes</td></tr>
+</table>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">WHERE vs HAVING?</div><div class="a">WHERE filters individual rows before they're grouped. HAVING filters groups after aggregation. WHERE can't use aggregates like SUM/AVG; HAVING can.</div></div>
+  <div class="qa"><div class="q">Can you use a column alias from SELECT in HAVING?</div><div class="a">Depends on DB. MySQL/PostgreSQL: yes. Standard SQL: no — repeat the expression. Safer to repeat.</div></div>
+</div>
+
+<div class="practice">
+  <div class="practice-title">10 LeetCode Problems — Aggregation &amp; GROUP BY</div>
+  <table class="lc">
+    <tr><td>#596</td><td><a href="https://leetcode.com/problems/classes-more-than-5-students/" target="_blank">Classes More Than 5 Students</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1729</td><td><a href="https://leetcode.com/problems/find-followers-count/" target="_blank">Find Followers Count</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1141</td><td><a href="https://leetcode.com/problems/user-activity-for-the-past-30-days-i/" target="_blank">User Activity Past 30 Days I</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1407</td><td><a href="https://leetcode.com/problems/top-travellers/" target="_blank">Top Travellers</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1907</td><td><a href="https://leetcode.com/problems/count-salary-categories/" target="_blank">Count Salary Categories</a></td><td class="med">Medium</td></tr>
+    <tr><td>#511</td><td><a href="https://leetcode.com/problems/game-play-analysis-i/" target="_blank">Game Play Analysis I</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#586</td><td><a href="https://leetcode.com/problems/customer-placing-the-largest-number-of-orders/" target="_blank">Customer With Most Orders</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1075</td><td><a href="https://leetcode.com/problems/project-employees-i/" target="_blank">Project Employees I</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1251</td><td><a href="https://leetcode.com/problems/average-selling-price/" target="_blank">Average Selling Price</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1193</td><td><a href="https://leetcode.com/problems/monthly-transactions-i/" target="_blank">Monthly Transactions I</a></td><td class="med">Medium</td></tr>
+  </table>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 10 — INNER JOIN -->
+<h2 id="inner" data-num="Chapter 10">INNER JOIN</h2>
+
+<p>A <strong>join</strong> combines rows from two tables based on a matching condition. <code>INNER JOIN</code> keeps only the rows that match in both tables.</p>
+
+<h3>Two tables</h3>
+
+<p><strong>employees</strong></p>
+<table class="result">
+  <tr><th>id</th><th>name</th><th>dept_id</th></tr>
+  <tr><td>1</td><td>Alice</td><td>10</td></tr>
+  <tr><td>2</td><td>Bob</td><td>10</td></tr>
+  <tr><td>3</td><td>Carol</td><td>20</td></tr>
+  <tr><td>4</td><td>Dan</td><td>NULL</td></tr>
+</table>
+
+<p><strong>departments</strong></p>
+<table class="result">
+  <tr><th>id</th><th>name</th></tr>
+  <tr><td>10</td><td>Engineering</td></tr>
+  <tr><td>20</td><td>Sales</td></tr>
+  <tr><td>30</td><td>Marketing</td></tr>
+</table>
+
+<pre><code>SELECT e.name AS employee, d.name AS department
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.id;</code></pre>
+
+<table class="result">
+  <tr><th>employee</th><th>department</th></tr>
+  <tr><td>Alice</td><td>Engineering</td></tr>
+  <tr><td>Bob</td><td>Engineering</td></tr>
+  <tr><td>Carol</td><td>Sales</td></tr>
+</table>
+
+<p>Note: Dan and Marketing don't appear because there's no match.</p>
+
+<div class="signal">
+  <div class="signal-title">Mental model</div>
+  <p>INNER JOIN = intersection. Imagine two circles in a Venn diagram — INNER JOIN returns only the overlapping middle.</p>
+</div>
+
+
+<!-- 11 — OUTER JOINS -->
+<h2 id="outer" data-num="Chapter 11">OUTER JOINs</h2>
+
+<h3>LEFT JOIN — keep all rows from the left table</h3>
+<pre><code>SELECT e.name, d.name AS department
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.id;</code></pre>
+
+<table class="result">
+  <tr><th>name</th><th>department</th></tr>
+  <tr><td>Alice</td><td>Engineering</td></tr>
+  <tr><td>Bob</td><td>Engineering</td></tr>
+  <tr><td>Carol</td><td>Sales</td></tr>
+  <tr><td>Dan</td><td>NULL</td></tr>
+</table>
+
+<p>Dan appears now — with NULL for department since he had no <code>dept_id</code>.</p>
+
+<h3>RIGHT JOIN — keep all rows from the right table</h3>
+<pre><code>SELECT e.name, d.name AS department
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.id;</code></pre>
+
+<table class="result">
+  <tr><th>name</th><th>department</th></tr>
+  <tr><td>Alice</td><td>Engineering</td></tr>
+  <tr><td>Bob</td><td>Engineering</td></tr>
+  <tr><td>Carol</td><td>Sales</td></tr>
+  <tr><td>NULL</td><td>Marketing</td></tr>
+</table>
+
+<h3>FULL OUTER JOIN — keep everything from both</h3>
+<pre><code>SELECT e.name, d.name AS department
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.id;</code></pre>
+<p>Result includes Dan (no department) AND Marketing (no employees).</p>
+
+<div class="gotcha">
+  <div class="gotcha-title">MySQL has no FULL OUTER JOIN</div>
+  <p>Simulate it with: <code>SELECT … LEFT JOIN … UNION SELECT … RIGHT JOIN …</code></p>
+</div>
+
+<h3>Visualizing all joins</h3>
+<div class="diagram">  INNER:        LEFT:          RIGHT:         FULL:
+
+     ┌──┐         ┌──┐           ┌──┐          ┌──┐
+   ┌─┤▓▓├─┐    ┌──┤▓▓├──┐     ┌──┤▓▓├──┐    ┌──┤▓▓├──┐
+   │ └──┘ │    │██└──┘  │     │  └──┘██│    │██└──┘██│
+   └──────┘    └────────┘     └────────┘    └────────┘
+   A ∩ B       A (all)        B (all)       A ∪ B</div>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Difference between INNER and LEFT JOIN?</div><div class="a">INNER returns only matching rows. LEFT returns all rows from left table, with NULLs where the right has no match.</div></div>
+  <div class="qa"><div class="q">How to find rows in A but NOT in B?</div><div class="a"><code>LEFT JOIN B ON …</code> then <code>WHERE B.id IS NULL</code>. Or use <code>NOT EXISTS</code>.</div></div>
+</div>
+
+
+<!-- 12 — SELF & CROSS -->
+<h2 id="self" data-num="Chapter 12">SELF JOIN &amp; CROSS JOIN</h2>
+
+<h3>SELF JOIN — table joined with itself</h3>
+<p>Useful when rows reference other rows in the same table (manager-employee, parent-child).</p>
+
+<table class="result">
+  <tr><th>id</th><th>name</th><th>manager_id</th></tr>
+  <tr><td>1</td><td>CEO</td><td>NULL</td></tr>
+  <tr><td>2</td><td>Alice</td><td>1</td></tr>
+  <tr><td>3</td><td>Bob</td><td>1</td></tr>
+  <tr><td>4</td><td>Carol</td><td>2</td></tr>
+</table>
+
+<pre><code>-- Show each employee with their manager's name
+SELECT e.name AS employee, m.name AS manager
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id;</code></pre>
+
+<table class="result">
+  <tr><th>employee</th><th>manager</th></tr>
+  <tr><td>CEO</td><td>NULL</td></tr>
+  <tr><td>Alice</td><td>CEO</td></tr>
+  <tr><td>Bob</td><td>CEO</td></tr>
+  <tr><td>Carol</td><td>Alice</td></tr>
+</table>
+
+<h3>CROSS JOIN — Cartesian product</h3>
+<p>Every row of A combined with every row of B. If A has 3 rows and B has 4, you get 12 rows.</p>
+
+<pre><code>SELECT s.size, c.color
+FROM sizes s
+CROSS JOIN colors c;</code></pre>
+
+<p>Useful for generating all combinations (sizes × colors for a product catalog).</p>
+
+<div class="gotcha">
+  <div class="gotcha-title">Accidental cross join</div>
+  <p>Forgetting the ON clause turns INNER JOIN into a cross join: <code>SELECT * FROM a, b</code> with no WHERE pairs every row of a with every row of b. Watch out for explosions on big tables.</p>
+</div>
+
+<div class="practice">
+  <div class="practice-title">10 LeetCode Problems — Joins</div>
+  <table class="lc">
+    <tr><td>#175</td><td><a href="https://leetcode.com/problems/combine-two-tables/" target="_blank">Combine Two Tables</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#181</td><td><a href="https://leetcode.com/problems/employees-earning-more-than-their-managers/" target="_blank">Employees Earning More Than Managers</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#197</td><td><a href="https://leetcode.com/problems/rising-temperature/" target="_blank">Rising Temperature</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#577</td><td><a href="https://leetcode.com/problems/employee-bonus/" target="_blank">Employee Bonus</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1068</td><td><a href="https://leetcode.com/problems/product-sales-analysis-i/" target="_blank">Product Sales Analysis I</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1280</td><td><a href="https://leetcode.com/problems/students-and-examinations/" target="_blank">Students and Examinations</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1581</td><td><a href="https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/" target="_blank">Customer Who Visited But No Transactions</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1378</td><td><a href="https://leetcode.com/problems/replace-employee-id-with-the-unique-identifier/" target="_blank">Replace Employee ID</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1views</td><td><a href="https://leetcode.com/problems/page-recommendations/" target="_blank">Page Recommendations</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1158</td><td><a href="https://leetcode.com/problems/market-analysis-i/" target="_blank">Market Analysis I</a></td><td class="med">Medium</td></tr>
+  </table>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 13 — SUBQUERIES -->
+<h2 id="subq" data-num="Chapter 13">Subqueries</h2>
+
+<p>A subquery is a query inside another query. Three flavors based on where you use it:</p>
+
+<h3>1. Scalar subquery — returns a single value</h3>
+<pre><code>-- Employees earning more than the average
+SELECT name, salary
+FROM employees
+WHERE salary &gt; (SELECT AVG(salary) FROM employees);</code></pre>
+
+<h3>2. Row / Column subquery — returns a list</h3>
+<pre><code>-- Employees in big-budget departments
+SELECT name
+FROM employees
+WHERE dept_id IN (
+    SELECT id FROM departments WHERE budget &gt; 1000000
+);</code></pre>
+
+<h3>3. Correlated subquery — references outer query</h3>
+<p>Re-runs for each row in the outer query. Powerful but can be slow.</p>
+
+<pre><code>-- Employees earning more than their department's average
+SELECT name, dept_id, salary
+FROM employees e1
+WHERE salary &gt; (
+    SELECT AVG(salary)
+    FROM employees e2
+    WHERE e2.dept_id = e1.dept_id        -- correlation!
+);</code></pre>
+
+<h3>Subquery in FROM (derived table)</h3>
+<pre><code>SELECT dept_name, avg_salary
+FROM (
+    SELECT d.name AS dept_name, AVG(e.salary) AS avg_salary
+    FROM employees e JOIN departments d ON e.dept_id = d.id
+    GROUP BY d.name
+) AS dept_stats
+WHERE avg_salary &gt; 75000;</code></pre>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Subquery vs JOIN — which is faster?</div><div class="a">Usually JOIN. Most query optimizers can rewrite IN-subqueries as joins, but explicit JOINs are clearer and often faster — especially for correlated subqueries. Profile, don't assume.</div></div>
+  <div class="qa"><div class="q">When MUST you use a subquery?</div><div class="a">When you need aggregation before filtering ("rows where x &gt; AVG of all x"), or when comparing multiple aggregates per row.</div></div>
+</div>
+
+
+<!-- 14 — EXISTS -->
+<h2 id="exists" data-num="Chapter 14">EXISTS, ANY, ALL</h2>
+
+<h3>EXISTS — does any row match?</h3>
+<p>Returns true as soon as one matching row is found — efficient for existence checks.</p>
+
+<pre><code>-- Customers who have placed at least one order
+SELECT name FROM customers c
+WHERE EXISTS (
+    SELECT 1 FROM orders o WHERE o.customer_id = c.id
+);
+
+-- Customers who have NEVER placed an order
+SELECT name FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1 FROM orders o WHERE o.customer_id = c.id
+);</code></pre>
+
+<h3>ANY / SOME — match any value in a list</h3>
+<pre><code>-- Products costing more than ANY product in 'Books' category
+SELECT name, price FROM products
+WHERE price &gt; ANY (
+    SELECT price FROM products WHERE category = 'Books'
+);
+-- Means: greater than the MINIMUM book price</code></pre>
+
+<h3>ALL — match every value</h3>
+<pre><code>-- Products costing more than EVERY book
+SELECT name, price FROM products
+WHERE price &gt; ALL (
+    SELECT price FROM products WHERE category = 'Books'
+);
+-- Means: greater than the MAXIMUM book price</code></pre>
+
+<table class="compare">
+  <tr><th>Operator</th><th>Equivalent</th></tr>
+  <tr><td><code>&gt; ANY (set)</code></td><td><code>&gt; MIN(set)</code></td></tr>
+  <tr><td><code>&gt; ALL (set)</code></td><td><code>&gt; MAX(set)</code></td></tr>
+  <tr><td><code>&lt; ANY (set)</code></td><td><code>&lt; MAX(set)</code></td></tr>
+  <tr><td><code>&lt; ALL (set)</code></td><td><code>&lt; MIN(set)</code></td></tr>
+  <tr><td><code>= ANY (set)</code></td><td><code>IN (set)</code></td></tr>
+</table>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">EXISTS vs IN — when to use which?</div><div class="a">EXISTS is usually faster — it stops at the first match. Prefer EXISTS for correlated subqueries on large tables. IN is cleaner for static lists.</div></div>
+  <div class="qa"><div class="q">What does <code>SELECT 1</code> in an EXISTS clause mean?</div><div class="a">Nothing special — EXISTS only checks if rows exist, not their content. <code>SELECT 1</code>, <code>SELECT *</code>, or any column works identically. Convention is <code>SELECT 1</code> for clarity.</div></div>
+</div>
+
+
+<!-- 15 — UNION -->
+<h2 id="union" data-num="Chapter 15">UNION, INTERSECT, EXCEPT</h2>
+
+<p>Set operations stack queries vertically — combining rows from multiple SELECTs.</p>
+
+<h3>UNION — combine, remove duplicates</h3>
+<pre><code>SELECT name FROM customers
+UNION
+SELECT name FROM suppliers;</code></pre>
+
+<h3>UNION ALL — combine, keep duplicates</h3>
+<p>Faster than UNION because no deduplication is needed.</p>
+<pre><code>SELECT customer_id, 'order' AS source FROM orders
+UNION ALL
+SELECT customer_id, 'return' AS source FROM returns;</code></pre>
+
+<h3>INTERSECT — rows in both</h3>
+<pre><code>-- Users who are both customers and suppliers
+SELECT name FROM customers
+INTERSECT
+SELECT name FROM suppliers;</code></pre>
+
+<h3>EXCEPT (MINUS in Oracle) — rows in first but not second</h3>
+<pre><code>-- Customers who are NOT suppliers
+SELECT name FROM customers
+EXCEPT
+SELECT name FROM suppliers;</code></pre>
+
+<h3>Rules for set operations</h3>
+<ul>
+  <li>Same number of columns in each SELECT.</li>
+  <li>Compatible data types in each position.</li>
+  <li>Column names taken from the first SELECT.</li>
+  <li>ORDER BY can only appear at the very end.</li>
+</ul>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">UNION vs UNION ALL?</div><div class="a">UNION removes duplicates (requires sort/hash). UNION ALL keeps everything (much faster). Use UNION ALL unless you actually need deduplication.</div></div>
+</div>
+
+
+<!-- 16 — CTE -->
+<h2 id="cte" data-num="Chapter 16">CTEs (Common Table Expressions)</h2>
+
+<p>A CTE is a named temporary result set defined with <code>WITH</code>, used within a query. They make complex queries readable and reusable.</p>
+
+<pre><code>WITH high_earners AS (
+    SELECT * FROM employees WHERE salary &gt; 80000
+),
+by_dept AS (
+    SELECT dept_id, COUNT(*) AS n, AVG(salary) AS avg_pay
+    FROM high_earners
+    GROUP BY dept_id
+)
+SELECT d.name, b.n, b.avg_pay
+FROM by_dept b
+JOIN departments d ON d.id = b.dept_id
+ORDER BY b.avg_pay DESC;</code></pre>
+
+<h3>Why CTEs beat subqueries</h3>
+<ul>
+  <li>Read top-to-bottom like a story — vs. inside-out for nested subqueries</li>
+  <li>Can be referenced multiple times in the same query</li>
+  <li>Can be recursive (next section!)</li>
+</ul>
+
+<h3>Recursive CTE</h3>
+<p>The killer feature — generate sequences or traverse hierarchies.</p>
+
+<pre><code>-- Numbers 1 to 10
+WITH RECURSIVE numbers AS (
+    SELECT 1 AS n                       -- base case
+    UNION ALL
+    SELECT n + 1 FROM numbers
+    WHERE n &lt; 10                        -- termination!
+)
+SELECT * FROM numbers;</code></pre>
+
+<pre><code>-- Walk an org chart: everyone under the CEO
+WITH RECURSIVE org AS (
+    SELECT id, name, manager_id, 1 AS depth
+    FROM employees
+    WHERE manager_id IS NULL            -- the CEO
+
+    UNION ALL
+
+    SELECT e.id, e.name, e.manager_id, o.depth + 1
+    FROM employees e
+    JOIN org o ON e.manager_id = o.id
+)
+SELECT * FROM org ORDER BY depth, name;</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">Recursive CTE = always have a termination condition</div>
+  <p>Forget the <code>WHERE n &lt; 10</code> and you've got an infinite loop. Most DBs cap recursion depth (default 100 in PostgreSQL) — but don't rely on that.</p>
+</div>
+
+<div class="practice">
+  <div class="practice-title">5 LeetCode Problems — Subqueries &amp; CTEs</div>
+  <table class="lc">
+    <tr><td>#184</td><td><a href="https://leetcode.com/problems/department-highest-salary/" target="_blank">Department Highest Salary</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1934</td><td><a href="https://leetcode.com/problems/confirmation-rate/" target="_blank">Confirmation Rate</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1045</td><td><a href="https://leetcode.com/problems/customers-who-bought-all-products/" target="_blank">Customers Who Bought All Products</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1789</td><td><a href="https://leetcode.com/problems/primary-department-for-each-employee/" target="_blank">Primary Department for Each Employee</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1731</td><td><a href="https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/" target="_blank">Number of Employees Reporting to Each</a></td><td class="easy">Easy</td></tr>
+  </table>
+</div>
+
+
+<!-- 17 — CASE -->
+<h2 id="case" data-num="Chapter 17">CASE WHEN</h2>
+
+<p>The SQL equivalent of if/else. Use it inside SELECT, ORDER BY, WHERE, or anywhere an expression is allowed.</p>
+
+<pre><code>SELECT name, salary,
+    CASE
+        WHEN salary &gt; 90000 THEN 'High'
+        WHEN salary &gt; 70000 THEN 'Medium'
+        ELSE 'Low'
+    END AS salary_band
+FROM employees;</code></pre>
+
+<h3>Simple CASE</h3>
+<pre><code>SELECT name,
+    CASE department
+        WHEN 'Eng'      THEN 'Tech'
+        WHEN 'Sales'    THEN 'Business'
+        ELSE 'Other'
+    END AS division
+FROM employees;</code></pre>
+
+<h3>CASE in aggregates — the pivot trick</h3>
+<pre><code>-- Headcount per department in ONE row (manual pivot)
+SELECT
+    SUM(CASE WHEN department = 'Engineering' THEN 1 ELSE 0 END) AS eng,
+    SUM(CASE WHEN department = 'Sales'       THEN 1 ELSE 0 END) AS sales,
+    SUM(CASE WHEN department = 'Marketing'   THEN 1 ELSE 0 END) AS mktg
+FROM employees;</code></pre>
+
+<h3>CASE in UPDATE</h3>
+<pre><code>UPDATE employees
+SET salary = CASE
+    WHEN department = 'Engineering' THEN salary * 1.10
+    WHEN department = 'Sales'       THEN salary * 1.05
+    ELSE salary * 1.03
+END;</code></pre>
+
+<div class="practice">
+  <div class="practice-title">5 LeetCode Problems — CASE</div>
+  <table class="lc">
+    <tr><td>#627</td><td><a href="https://leetcode.com/problems/swap-salary/" target="_blank">Swap Salary</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1873</td><td><a href="https://leetcode.com/problems/calculate-special-bonus/" target="_blank">Calculate Special Bonus</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1294</td><td><a href="https://leetcode.com/problems/weather-type-in-each-country/" target="_blank">Weather Type in Each Country</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1322</td><td><a href="https://leetcode.com/problems/ads-performance/" target="_blank">Ads Performance</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1179</td><td><a href="https://leetcode.com/problems/reformat-department-table/" target="_blank">Reformat Department Table</a></td><td class="easy">Easy</td></tr>
+  </table>
+</div>
+
+
+<!-- 18 — WINDOW -->
+<h2 id="window" data-num="Chapter 18">Window Functions</h2>
+
+<p>Window functions are <em>the</em> superpower of modern SQL. They let you compute aggregates and rankings <strong>per row</strong>, while keeping the original rows visible.</p>
+
+<h3>The OVER clause</h3>
+<pre><code>SELECT name, department, salary,
+    AVG(salary) OVER ()                          AS overall_avg,
+    AVG(salary) OVER (PARTITION BY department)   AS dept_avg
+FROM employees;</code></pre>
+
+<table class="result">
+  <tr><th>name</th><th>department</th><th>salary</th><th>overall_avg</th><th>dept_avg</th></tr>
+  <tr><td>Alice</td><td>Engineering</td><td>90000</td><td>80000</td><td>87500</td></tr>
+  <tr><td>Bob</td><td>Engineering</td><td>85000</td><td>80000</td><td>87500</td></tr>
+  <tr><td>Carol</td><td>Sales</td><td>75000</td><td>80000</td><td>75000</td></tr>
+  <tr><td>Dan</td><td>Marketing</td><td>70000</td><td>80000</td><td>70000</td></tr>
+</table>
+
+<p>The original 4 rows are kept — each is augmented with the relevant average.</p>
+
+<h3>Anatomy of OVER</h3>
+<pre><code>function() OVER (
+    PARTITION BY col1               -- like GROUP BY, but doesn't collapse rows
+    ORDER BY col2                   -- order within each partition
+    ROWS BETWEEN ... AND ...        -- which rows to include (the "frame")
+)</code></pre>
+
+<h3>Aggregate windows</h3>
+<pre><code>-- Running total of sales by date
+SELECT order_date, amount,
+    SUM(amount) OVER (ORDER BY order_date) AS running_total
+FROM orders;
+
+-- 7-day moving average
+SELECT order_date, amount,
+    AVG(amount) OVER (
+        ORDER BY order_date
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) AS ma7
+FROM orders;</code></pre>
+
+<div class="signal">
+  <div class="signal-title">Why windows are game-changing</div>
+  <p>Before windows, "the salary AND the department average on the same row" needed a self-join or subquery. Window functions do it in one elegant expression.</p>
+</div>
+
+
+<!-- 19 — RANKING -->
+<h2 id="rank" data-num="Chapter 19">Ranking Functions</h2>
+
+<p>Three different ways to assign rank numbers.</p>
+
+<pre><code>SELECT name, salary,
+    ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num,
+    RANK()       OVER (ORDER BY salary DESC) AS rnk,
+    DENSE_RANK() OVER (ORDER BY salary DESC) AS d_rnk
+FROM employees;</code></pre>
+
+<table class="result">
+  <tr><th>name</th><th>salary</th><th>row_num</th><th>rnk</th><th>d_rnk</th></tr>
+  <tr><td>Alice</td><td>90000</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>Bob</td><td>85000</td><td>2</td><td>2</td><td>2</td></tr>
+  <tr><td>Bill</td><td>85000</td><td>3</td><td>2</td><td>2</td></tr>
+  <tr><td>Carol</td><td>75000</td><td>4</td><td>4</td><td>3</td></tr>
+</table>
+
+<table class="compare">
+  <tr><th>Function</th><th>Ties get</th><th>Next rank</th></tr>
+  <tr><td><code>ROW_NUMBER</code></td><td>Different numbers</td><td>+1</td></tr>
+  <tr><td><code>RANK</code></td><td>Same number</td><td>Skipped (1, 2, 2, 4)</td></tr>
+  <tr><td><code>DENSE_RANK</code></td><td>Same number</td><td>Not skipped (1, 2, 2, 3)</td></tr>
+</table>
+
+<h3>Top N per group — the classic interview question</h3>
+<pre><code>-- Top 3 highest-paid employees per department
+WITH ranked AS (
+    SELECT name, department, salary,
+        DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rk
+    FROM employees
+)
+SELECT name, department, salary
+FROM ranked
+WHERE rk &lt;= 3;</code></pre>
+
+<h3>NTILE — divide into N buckets</h3>
+<pre><code>-- Salary quartiles
+SELECT name, salary,
+    NTILE(4) OVER (ORDER BY salary) AS quartile
+FROM employees;</code></pre>
+
+<div class="practice">
+  <div class="practice-title">10 LeetCode Problems — Window Functions</div>
+  <table class="lc">
+    <tr><td>#177</td><td><a href="https://leetcode.com/problems/nth-highest-salary/" target="_blank">Nth Highest Salary</a></td><td class="med">Medium</td></tr>
+    <tr><td>#178</td><td><a href="https://leetcode.com/problems/rank-scores/" target="_blank">Rank Scores</a></td><td class="med">Medium</td></tr>
+    <tr><td>#180</td><td><a href="https://leetcode.com/problems/consecutive-numbers/" target="_blank">Consecutive Numbers</a></td><td class="med">Medium</td></tr>
+    <tr><td>#184</td><td><a href="https://leetcode.com/problems/department-highest-salary/" target="_blank">Department Highest Salary</a></td><td class="med">Medium</td></tr>
+    <tr><td>#185</td><td><a href="https://leetcode.com/problems/department-top-three-salaries/" target="_blank">Department Top Three Salaries</a></td><td class="hard">Hard</td></tr>
+    <tr><td>#601</td><td><a href="https://leetcode.com/problems/human-traffic-of-stadium/" target="_blank">Human Traffic of Stadium</a></td><td class="hard">Hard</td></tr>
+    <tr><td>#626</td><td><a href="https://leetcode.com/problems/exchange-seats/" target="_blank">Exchange Seats</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1158</td><td><a href="https://leetcode.com/problems/market-analysis-i/" target="_blank">Market Analysis I</a></td><td class="med">Medium</td></tr>
+    <tr><td>#1granted</td><td><a href="https://leetcode.com/problems/biggest-single-number/" target="_blank">Biggest Single Number</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1532</td><td><a href="https://leetcode.com/problems/the-most-recent-three-orders/" target="_blank">Most Recent Three Orders</a></td><td class="med">Medium</td></tr>
+  </table>
+</div>
+
+
+<!-- 20 — LAG/LEAD -->
+<h2 id="laglead" data-num="Chapter 20">LAG, LEAD &amp; Value Functions</h2>
+
+<p>These let you reach across rows in the same partition.</p>
+
+<table class="compare">
+  <tr><th>Function</th><th>What it returns</th></tr>
+  <tr><td><code>LAG(col, n)</code></td><td>Value from n rows before (previous)</td></tr>
+  <tr><td><code>LEAD(col, n)</code></td><td>Value from n rows after (next)</td></tr>
+  <tr><td><code>FIRST_VALUE(col)</code></td><td>First value in the window</td></tr>
+  <tr><td><code>LAST_VALUE(col)</code></td><td>Last value in the window</td></tr>
+  <tr><td><code>NTH_VALUE(col, n)</code></td><td>nth value in the window</td></tr>
+</table>
+
+<h3>Compare today vs yesterday</h3>
+<pre><code>SELECT order_date, amount,
+    LAG(amount) OVER (ORDER BY order_date) AS prev_amount,
+    amount - LAG(amount) OVER (ORDER BY order_date) AS day_change
+FROM daily_sales;</code></pre>
+
+<h3>Difference from peak</h3>
+<pre><code>SELECT name, salary, department,
+    FIRST_VALUE(salary) OVER (
+        PARTITION BY department
+        ORDER BY salary DESC
+    ) AS top_in_dept,
+    FIRST_VALUE(salary) OVER (
+        PARTITION BY department
+        ORDER BY salary DESC
+    ) - salary AS gap_from_top
+FROM employees;</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">LAST_VALUE pitfall</div>
+  <p>Without a frame clause, <code>LAST_VALUE</code> defaults to "rows from start to current row" — so it returns the current row's value, not the last in partition. Fix: <code>ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code>.</p>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 21 — STRING FUNCTIONS -->
+<h2 id="string" data-num="Chapter 21">String Functions</h2>
+
+<table class="compare">
+  <tr><th>Function</th><th>What it does</th><th>Example</th></tr>
+  <tr><td><code>LENGTH(s)</code></td><td>String length</td><td><code>LENGTH('hello') → 5</code></td></tr>
+  <tr><td><code>UPPER(s)</code> / <code>LOWER(s)</code></td><td>Change case</td><td><code>UPPER('hi') → 'HI'</code></td></tr>
+  <tr><td><code>TRIM(s)</code></td><td>Strip whitespace</td><td><code>TRIM('  hi  ') → 'hi'</code></td></tr>
+  <tr><td><code>CONCAT(a, b)</code></td><td>Join strings</td><td><code>CONCAT('Hi ', name)</code></td></tr>
+  <tr><td><code>SUBSTRING(s, p, n)</code></td><td>n chars from position p</td><td><code>SUBSTRING('hello', 2, 3) → 'ell'</code></td></tr>
+  <tr><td><code>REPLACE(s, a, b)</code></td><td>Replace a with b</td><td><code>REPLACE('hi.com', '.', '-') → 'hi-com'</code></td></tr>
+  <tr><td><code>LEFT(s, n)</code> / <code>RIGHT(s, n)</code></td><td>n leftmost/rightmost chars</td><td><code>LEFT('abcdef', 3) → 'abc'</code></td></tr>
+  <tr><td><code>POSITION(x IN s)</code></td><td>Position of x in s (1-based)</td><td><code>POSITION('l' IN 'hello') → 3</code></td></tr>
+  <tr><td><code>SPLIT_PART(s, d, n)</code></td><td>Split on d, return nth piece</td><td>PostgreSQL</td></tr>
+</table>
+
+<h3>String concatenation operators</h3>
+<pre><code>-- Standard SQL
+SELECT first_name || ' ' || last_name AS full_name FROM users;
+
+-- MySQL
+SELECT CONCAT(first_name, ' ', last_name) AS full_name FROM users;</code></pre>
+
+<div class="gotcha">
+  <div class="gotcha-title">CONCAT with NULL</div>
+  <p>In MySQL, <code>CONCAT('hi', NULL, 'there')</code> returns NULL. Use <code>CONCAT_WS</code> (with separator) which skips NULLs, or wrap fields with COALESCE.</p>
+</div>
+
+
+<!-- 22 — DATE -->
+<h2 id="date" data-num="Chapter 22">Date / Time Functions</h2>
+
+<table class="compare">
+  <tr><th>Function</th><th>What it returns</th></tr>
+  <tr><td><code>CURRENT_DATE</code> / <code>CURDATE()</code></td><td>Today's date</td></tr>
+  <tr><td><code>NOW()</code> / <code>CURRENT_TIMESTAMP</code></td><td>Date + time now</td></tr>
+  <tr><td><code>YEAR(d)</code> / <code>MONTH(d)</code> / <code>DAY(d)</code></td><td>Extract parts</td></tr>
+  <tr><td><code>EXTRACT(YEAR FROM d)</code></td><td>Standard SQL part extraction</td></tr>
+  <tr><td><code>DATE_ADD(d, INTERVAL 7 DAY)</code></td><td>Add a duration</td></tr>
+  <tr><td><code>DATEDIFF(a, b)</code></td><td>Days between dates</td></tr>
+  <tr><td><code>DATE_FORMAT(d, '%Y-%m')</code></td><td>Format as string (MySQL)</td></tr>
+  <tr><td><code>TO_CHAR(d, 'YYYY-MM')</code></td><td>Format (PostgreSQL/Oracle)</td></tr>
+</table>
+
+<h3>Common date queries</h3>
+<pre><code>-- Orders in last 30 days
+SELECT * FROM orders
+WHERE order_date &gt;= CURRENT_DATE - INTERVAL '30 days';
+
+-- Group by month
+SELECT DATE_FORMAT(order_date, '%Y-%m') AS month,
+       SUM(amount) AS total
+FROM orders
+GROUP BY DATE_FORMAT(order_date, '%Y-%m')
+ORDER BY month;
+
+-- Age calculation
+SELECT name, EXTRACT(YEAR FROM AGE(birth_date)) AS age
+FROM employees;</code></pre>
+
+<div class="practice">
+  <div class="practice-title">5 LeetCode Problems — Strings &amp; Dates</div>
+  <table class="lc">
+    <tr><td>#1484</td><td><a href="https://leetcode.com/problems/group-sold-products-by-the-date/" target="_blank">Group Sold Products by Date</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1517</td><td><a href="https://leetcode.com/problems/find-users-with-valid-e-mails/" target="_blank">Find Users With Valid Emails</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1527</td><td><a href="https://leetcode.com/problems/patients-with-a-condition/" target="_blank">Patients With a Condition</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1667</td><td><a href="https://leetcode.com/problems/fix-names-in-a-table/" target="_blank">Fix Names in a Table</a></td><td class="easy">Easy</td></tr>
+    <tr><td>#1543</td><td><a href="https://leetcode.com/problems/fix-product-name-format/" target="_blank">Fix Product Name Format</a></td><td class="easy">Easy</td></tr>
+  </table>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 23 — SCHEMA -->
+<h2 id="schema" data-num="Chapter 23">Schema, Keys &amp; Constraints</h2>
+
+<h3>Creating a table</h3>
+<pre><code>CREATE TABLE employees (
+    id           INT PRIMARY KEY AUTO_INCREMENT,
+    name         VARCHAR(100) NOT NULL,
+    email        VARCHAR(100) UNIQUE,
+    salary       DECIMAL(10, 2) CHECK (salary &gt;= 0),
+    dept_id      INT,
+    hire_date    DATE DEFAULT CURRENT_DATE,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (dept_id) REFERENCES departments(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);</code></pre>
+
+<h3>The 6 main constraints</h3>
+
+<table class="compare">
+  <tr><th>Constraint</th><th>What it enforces</th></tr>
+  <tr><td><code>PRIMARY KEY</code></td><td>Uniquely identifies each row; NOT NULL + UNIQUE</td></tr>
+  <tr><td><code>FOREIGN KEY</code></td><td>Value must exist in another table's column</td></tr>
+  <tr><td><code>UNIQUE</code></td><td>No duplicate values (NULLs allowed)</td></tr>
+  <tr><td><code>NOT NULL</code></td><td>Must have a value</td></tr>
+  <tr><td><code>CHECK</code></td><td>Custom validation (e.g. age &gt; 0)</td></tr>
+  <tr><td><code>DEFAULT</code></td><td>Used when no value provided on insert</td></tr>
+</table>
+
+<h3>Primary key vs Unique key</h3>
+<table class="compare">
+  <tr><th></th><th>PRIMARY KEY</th><th>UNIQUE</th></tr>
+  <tr><td>Per table</td><td>Exactly one</td><td>Many allowed</td></tr>
+  <tr><td>NULL allowed?</td><td>No</td><td>Yes (one NULL usually)</td></tr>
+  <tr><td>Creates index?</td><td>Yes (clustered, often)</td><td>Yes (non-clustered)</td></tr>
+</table>
+
+<h3>Foreign key actions</h3>
+<table class="compare">
+  <tr><th>Action</th><th>When parent row is deleted/updated</th></tr>
+  <tr><td><code>CASCADE</code></td><td>Same action on child rows</td></tr>
+  <tr><td><code>SET NULL</code></td><td>Set child's FK to NULL</td></tr>
+  <tr><td><code>SET DEFAULT</code></td><td>Set child's FK to default value</td></tr>
+  <tr><td><code>RESTRICT</code> / <code>NO ACTION</code></td><td>Reject if children exist</td></tr>
+</table>
+
+<h3>Altering tables</h3>
+<pre><code>ALTER TABLE employees ADD COLUMN phone VARCHAR(20);
+ALTER TABLE employees DROP COLUMN phone;
+ALTER TABLE employees RENAME COLUMN name TO full_name;
+ALTER TABLE employees MODIFY salary DECIMAL(12, 2);    -- MySQL
+ALTER TABLE employees ALTER COLUMN salary TYPE DECIMAL(12, 2);  -- PostgreSQL</code></pre>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Can a table have multiple primary keys?</div><div class="a">No. But it can have a <em>composite</em> primary key — multiple columns combined into one key.</div></div>
+  <div class="qa"><div class="q">What's a surrogate key?</div><div class="a">An artificial primary key (usually auto-incrementing integer or UUID) with no business meaning, vs a "natural key" like SSN or email which has real-world meaning. Surrogate keys are preferred — they never change.</div></div>
+</div>
+
+
+<!-- 24 — NORMALIZATION -->
+<h2 id="normal" data-num="Chapter 24">Normalization</h2>
+
+<p>Normalization = organizing data to eliminate redundancy and avoid update anomalies. Each "normal form" adds stricter rules.</p>
+
+<h3>The denormalized horror</h3>
+<table class="result">
+  <tr><th>order_id</th><th>customer_name</th><th>customer_phone</th><th>products</th><th>prices</th></tr>
+  <tr><td>1</td><td>Alice</td><td>555-1234</td><td>Pen, Notebook</td><td>5, 10</td></tr>
+  <tr><td>2</td><td>Alice</td><td>555-1234</td><td>Pen</td><td>5</td></tr>
+</table>
+<p>Customer info repeated. Multiple values in one cell. Update Alice's phone → must update everywhere.</p>
+
+<h3>1NF — First Normal Form</h3>
+<p><strong>Rule:</strong> Atomic values only. No repeating groups or lists in a cell.</p>
+<p>Fix: Split "Pen, Notebook" into separate rows.</p>
+
+<h3>2NF — Second Normal Form</h3>
+<p><strong>Rule:</strong> 1NF + every non-key column depends on the <em>entire</em> primary key (no partial dependencies). Matters when PK is composite.</p>
+
+<h3>3NF — Third Normal Form</h3>
+<p><strong>Rule:</strong> 2NF + no transitive dependencies. Non-key columns must depend only on the primary key, not on other non-key columns.</p>
+<p>Example violation: <code>order(id, customer_id, customer_phone)</code> — customer_phone depends on customer_id, not on order id. Fix: move it to a customers table.</p>
+
+<h3>BCNF — Boyce-Codd Normal Form</h3>
+<p>A stricter 3NF — every determinant must be a candidate key. Rarely matters in practice.</p>
+
+<div class="example">
+  <div class="example-title">Properly normalized version</div>
+  <p><strong>customers</strong>: id, name, phone<br/><strong>products</strong>: id, name, price<br/><strong>orders</strong>: id, customer_id, order_date<br/><strong>order_items</strong>: order_id, product_id, quantity</p>
+</div>
+
+<h3>When NOT to normalize — denormalization</h3>
+<p>Sometimes you intentionally duplicate data for read performance — common in data warehouses and analytics tables. The trade-off: faster reads, harder writes (must update in multiple places).</p>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Pros and cons of normalization?</div><div class="a">Pros: less storage, no update anomalies, integrity. Cons: more joins (slower reads), harder to write some queries. Real systems balance — normalize transactional DBs, denormalize analytical DBs.</div></div>
+  <div class="qa"><div class="q">When is 3NF "enough"?</div><div class="a">For 99% of business applications. BCNF/4NF/5NF are theoretical refinements; rarely needed in practice.</div></div>
+</div>
+
+
+<!-- 25 — INDEXES -->
+<h2 id="index" data-num="Chapter 25">Indexes</h2>
+
+<p>An index is a separate data structure that lets the DB find rows faster — like a book's index page. Without it, every query has to scan the whole table.</p>
+
+<pre><code>CREATE INDEX idx_employees_email ON employees(email);
+CREATE INDEX idx_employees_dept_salary ON employees(dept_id, salary);    -- composite
+CREATE UNIQUE INDEX idx_employees_email ON employees(email);
+DROP INDEX idx_employees_email;</code></pre>
+
+<h3>How indexes work — B-tree</h3>
+<p>Most indexes are <strong>B-trees</strong> (balanced trees). Lookups in O(log n). The DB walks down the tree to find your value.</p>
+
+<div class="diagram">                    [Salary &lt; 80k]
+                    /            \
+              [50k, 60k, 70k]  [80k, 90k, 100k+]
+              /  |  \           /   |   \
+           rows rows rows    rows rows rows</div>
+
+<h3>Index types</h3>
+
+<table class="compare">
+  <tr><th>Type</th><th>Use case</th></tr>
+  <tr><td><strong>B-tree</strong></td><td>Default — equality, range, ORDER BY, prefix LIKE</td></tr>
+  <tr><td><strong>Hash</strong></td><td>Equality only (no range). Very fast for exact matches</td></tr>
+  <tr><td><strong>Bitmap</strong></td><td>Low-cardinality columns (gender, status). Warehouses</td></tr>
+  <tr><td><strong>Full-text</strong></td><td>Searching inside large text (articles)</td></tr>
+  <tr><td><strong>GIN / GiST</strong></td><td>PostgreSQL: arrays, JSON, geo, full-text</td></tr>
+</table>
+
+<h3>Clustered vs Non-clustered</h3>
+<table class="compare">
+  <tr><th></th><th>Clustered</th><th>Non-clustered</th></tr>
+  <tr><td>What it is</td><td>Defines the physical order of rows on disk</td><td>Separate structure pointing to rows</td></tr>
+  <tr><td>Per table</td><td>One (usually on primary key)</td><td>Many</td></tr>
+  <tr><td>Lookup speed</td><td>Faster (rows are already there)</td><td>Slight extra step</td></tr>
+</table>
+
+<h3>When indexes help — and when they hurt</h3>
+
+<table class="compare">
+  <tr><th>Good for indexes</th><th>Bad for indexes</th></tr>
+  <tr><td>Columns in WHERE clauses</td><td>Frequently updated columns</td></tr>
+  <tr><td>JOIN keys</td><td>Small tables (full scan is fine)</td></tr>
+  <tr><td>ORDER BY columns</td><td>Low-cardinality columns (boolean)</td></tr>
+  <tr><td>Foreign keys</td><td>Tables with mostly writes</td></tr>
+</table>
+
+<h3>Composite indexes — leftmost prefix rule</h3>
+<p>Index on <code>(a, b, c)</code> can serve queries filtering by:</p>
+<ul>
+  <li><code>WHERE a = ?</code> ✓</li>
+  <li><code>WHERE a = ? AND b = ?</code> ✓</li>
+  <li><code>WHERE a = ? AND b = ? AND c = ?</code> ✓</li>
+  <li><code>WHERE b = ?</code> ✗ (no leftmost column)</li>
+  <li><code>WHERE a = ? AND c = ?</code> ◇ (partial — only uses a)</li>
+</ul>
+
+<div class="gotcha">
+  <div class="gotcha-title">Indexes aren't free</div>
+  <p>Every index slows down INSERT/UPDATE/DELETE — the DB must update each index too. They also take disk space. Don't index every column.</p>
+</div>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">When does <code>WHERE col LIKE '%abc'</code> use an index?</div><div class="a">Never (in B-tree). Leading wildcards skip indexes. <code>LIKE 'abc%'</code> CAN use one. Use full-text indexes for substring searches.</div></div>
+  <div class="qa"><div class="q">Does <code>WHERE YEAR(date_col) = 2024</code> use an index on date_col?</div><div class="a">No. Wrapping a column in a function defeats index use. Rewrite as <code>WHERE date_col BETWEEN '2024-01-01' AND '2024-12-31'</code>.</div></div>
+</div>
+
+
+<!-- 26 — VIEWS -->
+<h2 id="views" data-num="Chapter 26">Views</h2>
+
+<p>A view is a saved SELECT query. You query it like a table, but it doesn't store data — it re-runs the query each time.</p>
+
+<pre><code>CREATE VIEW high_earners AS
+SELECT id, name, department, salary
+FROM employees
+WHERE salary &gt; 80000;
+
+-- Now query it
+SELECT * FROM high_earners WHERE department = 'Engineering';
+
+-- Drop it
+DROP VIEW high_earners;</code></pre>
+
+<h3>Why views</h3>
+<ul>
+  <li><strong>Abstraction</strong> — hide complex joins behind a simple name.</li>
+  <li><strong>Security</strong> — grant access to a view that exposes only safe columns.</li>
+  <li><strong>Reusability</strong> — define once, use in many queries.</li>
+  <li><strong>Consistency</strong> — everyone uses the same business logic.</li>
+</ul>
+
+<h3>Materialized views</h3>
+<p>A regular view re-runs every time. A <strong>materialized view</strong> stores the actual result and must be refreshed manually (or on a schedule). Faster reads, but data can be stale.</p>
+
+<pre><code>CREATE MATERIALIZED VIEW monthly_revenue AS
+SELECT DATE_TRUNC('month', order_date) AS month, SUM(amount) AS revenue
+FROM orders
+GROUP BY 1;
+
+REFRESH MATERIALIZED VIEW monthly_revenue;</code></pre>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">View vs Table?</div><div class="a">Table holds data physically. View is a stored query that returns data on demand. Materialized view stores cached query results.</div></div>
+  <div class="qa"><div class="q">Can you INSERT into a view?</div><div class="a">Sometimes — only "updatable views" with simple selects (no joins, no aggregates). Complex views are read-only.</div></div>
+</div>
+
+
+<!-- 27 — PROCS -->
+<h2 id="procs" data-num="Chapter 27">Stored Procedures, Functions &amp; Triggers</h2>
+
+<h3>Stored procedures</h3>
+<p>A named, reusable block of SQL stored in the database. Called with <code>CALL</code>.</p>
+
+<pre><code>CREATE PROCEDURE raise_salary(IN dept_id INT, IN pct DECIMAL(5,2))
+BEGIN
+    UPDATE employees
+    SET salary = salary * (1 + pct/100)
+    WHERE dept_id = dept_id;
+END;
+
+CALL raise_salary(10, 5);     -- give Engineering a 5% raise</code></pre>
+
+<h3>Functions</h3>
+<p>Like procedures but return a value. Can be used in queries.</p>
+
+<pre><code>CREATE FUNCTION yearly_salary(monthly DECIMAL)
+RETURNS DECIMAL
+DETERMINISTIC
+BEGIN
+    RETURN monthly * 12;
+END;
+
+SELECT name, yearly_salary(salary) FROM employees;</code></pre>
+
+<h3>Triggers</h3>
+<p>Code that runs automatically in response to INSERT, UPDATE, or DELETE events.</p>
+
+<pre><code>CREATE TRIGGER audit_salary_change
+AFTER UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF OLD.salary != NEW.salary THEN
+        INSERT INTO salary_audit (employee_id, old_salary, new_salary, changed_at)
+        VALUES (OLD.id, OLD.salary, NEW.salary, NOW());
+    END IF;
+END;</code></pre>
+
+<table class="compare">
+  <tr><th></th><th>Procedure</th><th>Function</th><th>Trigger</th></tr>
+  <tr><td>Returns value?</td><td>Optional via OUT</td><td>Must return</td><td>No</td></tr>
+  <tr><td>Called by</td><td><code>CALL</code></td><td>Within queries</td><td>Auto on event</td></tr>
+  <tr><td>Modify data?</td><td>Yes</td><td>Usually no</td><td>Yes</td></tr>
+</table>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">When to use triggers?</div><div class="a">Auditing, enforcing complex business rules, maintaining derived data. Use sparingly — triggers are invisible, hard to debug, and can chain unexpectedly.</div></div>
+  <div class="qa"><div class="q">Stored procedure vs application code?</div><div class="a">Stored procs are faster (no network round trips) and DB-portable across apps. But they're harder to version-control, test, and scale than application code. Modern stacks favor application logic + simple SQL.</div></div>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 28 — TRANSACTIONS -->
+<h2 id="acid" data-num="Chapter 28">Transactions &amp; ACID</h2>
+
+<p>A <strong>transaction</strong> is a group of SQL statements treated as a single unit. Either all of them succeed, or none of them — there's no in-between.</p>
+
+<pre><code>BEGIN;                                              -- START TRANSACTION
+
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+
+COMMIT;     -- both succeed
+-- or
+ROLLBACK;   -- both undone</code></pre>
+
+<p>If the second UPDATE fails (or power goes out), ROLLBACK ensures account 1 isn't debited without account 2 being credited. No money disappears.</p>
+
+<h3>The ACID properties</h3>
+
+<table class="compare">
+  <tr><th>Letter</th><th>Property</th><th>Means</th></tr>
+  <tr><td>A</td><td>Atomicity</td><td>All or nothing. Partial transactions don't exist.</td></tr>
+  <tr><td>C</td><td>Consistency</td><td>Transactions move DB from one valid state to another (constraints respected).</td></tr>
+  <tr><td>I</td><td>Isolation</td><td>Concurrent transactions don't see each other's intermediate state.</td></tr>
+  <tr><td>D</td><td>Durability</td><td>Once committed, changes survive crashes / power loss.</td></tr>
+</table>
+
+<h3>SAVEPOINT — partial rollback</h3>
+<pre><code>BEGIN;
+INSERT INTO orders ...;
+SAVEPOINT after_order;
+
+INSERT INTO order_items ...;
+-- something fails
+ROLLBACK TO after_order;     -- undo only the items, keep the order
+
+COMMIT;</code></pre>
+
+<div class="example">
+  <div class="example-title">Classic example — bank transfer</div>
+  <p>Withdraw $100 from A, deposit $100 to B. Both must happen. If only the withdrawal succeeds, money vanishes. If only the deposit succeeds, money appears from nowhere. Transactions guarantee neither weird state can occur.</p>
+</div>
+
+
+<!-- 29 — ISOLATION -->
+<h2 id="isolation" data-num="Chapter 29">Isolation Levels</h2>
+
+<p>"Isolation" controls how much one transaction can see what others are doing. Stricter = safer but slower. Looser = faster but lets weird things happen.</p>
+
+<h3>The four read phenomena</h3>
+
+<table class="compare">
+  <tr><th>Problem</th><th>What happens</th></tr>
+  <tr><td><strong>Dirty Read</strong></td><td>You read data another transaction hasn't committed yet.</td></tr>
+  <tr><td><strong>Non-repeatable Read</strong></td><td>Same query in same transaction returns different values (someone updated between).</td></tr>
+  <tr><td><strong>Phantom Read</strong></td><td>Same query returns different <em>rows</em> (someone inserted between).</td></tr>
+  <tr><td><strong>Lost Update</strong></td><td>Two transactions update same row; one's change overwrites the other.</td></tr>
+</table>
+
+<h3>The four standard isolation levels</h3>
+
+<table class="compare">
+  <tr><th>Level</th><th>Dirty</th><th>Non-rep</th><th>Phantom</th></tr>
+  <tr><td>READ UNCOMMITTED</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>READ COMMITTED <em>(default in PG/Oracle)</em></td><td>—</td><td>Yes</td><td>Yes</td></tr>
+  <tr><td>REPEATABLE READ <em>(default in MySQL)</em></td><td>—</td><td>—</td><td>Yes*</td></tr>
+  <tr><td>SERIALIZABLE</td><td>—</td><td>—</td><td>—</td></tr>
+</table>
+
+<p>*MySQL's REPEATABLE READ also blocks phantom reads via "gap locks". Standard SQL allows them.</p>
+
+<pre><code>SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN;
+-- ...
+COMMIT;</code></pre>
+
+<div class="signal">
+  <div class="signal-title">Rule of thumb</div>
+  <p>Default isolation is fine for 99% of apps. Reach for SERIALIZABLE only when you really need it (banking, inventory). Higher isolation = more locks = lower throughput.</p>
+</div>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Difference between dirty read and non-repeatable read?</div><div class="a">Dirty read = you see uncommitted data (might be rolled back). Non-repeatable read = you re-read and the value has changed (someone committed an update between).</div></div>
+  <div class="qa"><div class="q">Why isn't every database SERIALIZABLE by default?</div><div class="a">Performance. SERIALIZABLE requires heavy locking or expensive validation. Most apps tolerate weaker isolation in exchange for higher throughput.</div></div>
+</div>
+
+
+<!-- 30 — LOCKING -->
+<h2 id="lock" data-num="Chapter 30">Locking &amp; Deadlocks</h2>
+
+<p>Locks are how databases prevent two transactions from corrupting shared data. Most DB lock automatically — you usually don't see them, until they cause problems.</p>
+
+<h3>Lock types</h3>
+
+<table class="compare">
+  <tr><th>Lock</th><th>Allows others to read?</th><th>Allows others to write?</th></tr>
+  <tr><td>Shared (read lock)</td><td>Yes</td><td>No</td></tr>
+  <tr><td>Exclusive (write lock)</td><td>No</td><td>No</td></tr>
+</table>
+
+<h3>Lock granularity</h3>
+<ul>
+  <li><strong>Row-level</strong> — best concurrency, but more memory.</li>
+  <li><strong>Page-level</strong> — locks blocks of disk.</li>
+  <li><strong>Table-level</strong> — entire table locked. Cheap, but kills concurrency.</li>
+</ul>
+
+<h3>Explicit locking</h3>
+<pre><code>-- Lock rows for update during transaction
+SELECT * FROM accounts WHERE id = 1 FOR UPDATE;
+
+-- Lock rows for shared read
+SELECT * FROM accounts WHERE id = 1 FOR SHARE;</code></pre>
+
+<h3>Deadlock</h3>
+<p>Two transactions each waiting for a lock the other holds. Forever.</p>
+
+<div class="diagram">  Transaction A             Transaction B
+  ─────────────             ─────────────
+  LOCK row 1                LOCK row 2
+                  ◄ waits ►
+  WAITING for row 2         WAITING for row 1
+  (held by B)               (held by A)</div>
+
+<p>Databases detect this and abort one transaction. You'll get an error and must retry.</p>
+
+<h3>Avoiding deadlocks</h3>
+<ul>
+  <li>Acquire locks in a consistent order (e.g. always lower id first).</li>
+  <li>Keep transactions short — release locks fast.</li>
+  <li>Use lower isolation levels when possible.</li>
+  <li>Add retry logic in your application for the inevitable few.</li>
+</ul>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Optimistic vs Pessimistic locking?</div><div class="a">Pessimistic = acquire locks upfront (FOR UPDATE). Safer but slower under contention. Optimistic = no locks; check before commit (with a version column). Faster, but you must retry on conflict.</div></div>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 31 — EXPLAIN -->
+<h2 id="explain" data-num="Chapter 31">Query Optimization &amp; EXPLAIN</h2>
+
+<p>The DB's <strong>query planner</strong> decides how to execute your query — which indexes to use, which join algorithm, what order to access tables. <code>EXPLAIN</code> shows you that plan.</p>
+
+<pre><code>EXPLAIN SELECT * FROM employees WHERE email = 'alice@x.com';</code></pre>
+
+<h3>What EXPLAIN shows</h3>
+<ul>
+  <li><strong>Access method:</strong> table scan, index scan, index seek.</li>
+  <li><strong>Join order:</strong> which table is read first.</li>
+  <li><strong>Join algorithm:</strong> nested loop, hash, merge.</li>
+  <li><strong>Estimated rows:</strong> how many rows the planner expects.</li>
+  <li><strong>Cost:</strong> arbitrary internal units.</li>
+</ul>
+
+<h3>Common access methods</h3>
+
+<table class="compare">
+  <tr><th>Method</th><th>Speed</th><th>When</th></tr>
+  <tr><td>Index Seek</td><td>Fast</td><td>Exact match on indexed column</td></tr>
+  <tr><td>Index Scan</td><td>Medium</td><td>Range query on indexed column</td></tr>
+  <tr><td>Table Scan / Full Scan</td><td>Slow</td><td>No usable index — reads every row</td></tr>
+</table>
+
+<h3>Join algorithms</h3>
+
+<table class="compare">
+  <tr><th>Algorithm</th><th>Best for</th></tr>
+  <tr><td>Nested Loop</td><td>Small outer + indexed inner table</td></tr>
+  <tr><td>Hash Join</td><td>No useful index; both tables large; equi-join</td></tr>
+  <tr><td>Merge Join</td><td>Both inputs already sorted on join key</td></tr>
+</table>
+
+<h3>Top 10 optimization tactics</h3>
+<ol>
+  <li><strong>Add indexes</strong> on columns used in WHERE, JOIN, ORDER BY.</li>
+  <li><strong>Select only the columns you need</strong> — avoid <code>SELECT *</code>.</li>
+  <li><strong>Filter early</strong> — WHERE before JOIN when possible.</li>
+  <li><strong>Avoid functions on indexed columns</strong> in WHERE (kills index use).</li>
+  <li><strong>Use EXISTS instead of IN</strong> for correlated subqueries.</li>
+  <li><strong>Use UNION ALL when duplicates impossible</strong> — UNION is slower.</li>
+  <li><strong>LIMIT large result sets</strong> — don't fetch what you won't display.</li>
+  <li><strong>Watch out for N+1 query patterns</strong> in app code — join in SQL instead.</li>
+  <li><strong>Update statistics</strong> regularly (<code>ANALYZE</code>) so the planner has good info.</li>
+  <li><strong>Use covering indexes</strong> — index includes all columns needed → no table access.</li>
+</ol>
+
+<h3>The N+1 problem</h3>
+<pre><code>-- BAD — 1 query for users + N queries for each user's orders
+List&lt;User&gt; users = db.query("SELECT * FROM users");
+for (User u : users) {
+    u.orders = db.query("SELECT * FROM orders WHERE user_id = ?", u.id);
+}
+
+-- GOOD — single JOIN query
+SELECT u.*, o.* FROM users u LEFT JOIN orders o ON o.user_id = u.id;</code></pre>
+
+<div class="interview-q">
+  <div class="interview-title">Common Interview Q</div>
+  <div class="qa"><div class="q">Why might EXPLAIN show a full scan even with an index?</div><div class="a">Several reasons: small table (faster to scan), the function wraps the column, data types mismatch (implicit cast), low selectivity (90% of rows match), stale statistics.</div></div>
+  <div class="qa"><div class="q">What is a covering index?</div><div class="a">An index that contains all columns needed by the query, so the DB doesn't need to fetch the table at all. Hugely faster.</div></div>
+</div>
+
+<hr class="section-break"/>
+
+<!-- 32 — PATTERNS -->
+<h2 id="patterns2" data-num="Chapter 32">SQL Interview Patterns</h2>
+
+<p>Certain query patterns appear over and over. Drill these and you'll recognize them in any interview.</p>
+
+<h3>1. Nth highest salary</h3>
+<pre><code>-- Approach 1: window function
+SELECT salary FROM (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rk
+    FROM employees
+) t WHERE rk = N;
+
+-- Approach 2: subquery
+SELECT MAX(salary) FROM employees
+WHERE salary &lt; (SELECT MAX(salary) FROM employees);  -- 2nd highest
+
+-- Approach 3: LIMIT
+SELECT DISTINCT salary FROM employees
+ORDER BY salary DESC LIMIT 1 OFFSET N-1;</code></pre>
+
+<h3>2. Top N per group</h3>
+<pre><code>-- Top 3 highest paid in each department
+WITH ranked AS (
+    SELECT *, DENSE_RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rk
+    FROM employees
+)
+SELECT * FROM ranked WHERE rk &lt;= 3;</code></pre>
+
+<h3>3. Find duplicates</h3>
+<pre><code>SELECT email, COUNT(*)
+FROM users
+GROUP BY email
+HAVING COUNT(*) &gt; 1;</code></pre>
+
+<h3>4. Delete duplicates, keep one</h3>
+<pre><code>-- Keep row with smallest id per email
+DELETE FROM users
+WHERE id NOT IN (
+    SELECT MIN(id) FROM users GROUP BY email
+);</code></pre>
+
+<h3>5. Consecutive numbers / dates</h3>
+<pre><code>-- Detect 3 consecutive identical values in a log
+SELECT DISTINCT a.value
+FROM logs a
+JOIN logs b ON b.id = a.id + 1 AND b.value = a.value
+JOIN logs c ON c.id = a.id + 2 AND c.value = a.value;</code></pre>
+
+<h3>6. Running total</h3>
+<pre><code>SELECT order_date, amount,
+    SUM(amount) OVER (ORDER BY order_date) AS running_total
+FROM orders;</code></pre>
+
+<h3>7. Median (no MEDIAN function in most DBs)</h3>
+<pre><code>SELECT AVG(salary) AS median_salary FROM (
+    SELECT salary,
+        ROW_NUMBER() OVER (ORDER BY salary) AS rn,
+        COUNT(*) OVER () AS total
+    FROM employees
+) t
+WHERE rn IN ((total + 1) / 2, (total + 2) / 2);</code></pre>
+
+<h3>8. Pivot — rows to columns</h3>
+<pre><code>SELECT
+    user_id,
+    SUM(CASE WHEN month = 1 THEN amount ELSE 0 END) AS jan,
+    SUM(CASE WHEN month = 2 THEN amount ELSE 0 END) AS feb,
+    SUM(CASE WHEN month = 3 THEN amount ELSE 0 END) AS mar
+FROM sales
+GROUP BY user_id;</code></pre>
+
+<h3>9. Month-over-month growth</h3>
+<pre><code>WITH monthly AS (
+    SELECT DATE_TRUNC('month', order_date) AS month,
+           SUM(amount) AS revenue
+    FROM orders GROUP BY 1
+)
+SELECT month, revenue,
+    LAG(revenue) OVER (ORDER BY month) AS prev_month,
+    (revenue - LAG(revenue) OVER (ORDER BY month)) * 100.0
+        / LAG(revenue) OVER (ORDER BY month) AS pct_change
+FROM monthly;</code></pre>
+
+<h3>10. Gaps in sequence</h3>
+<pre><code>-- Find missing IDs
+SELECT id + 1 AS missing_start
+FROM users u
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE id = u.id + 1)
+ORDER BY id;</code></pre>
+
+
+<!-- 33 — CHEATSHEET -->
+<h2 id="cheat" data-num="Chapter 33">SQL Cheatsheet &amp; Study Plan</h2>
+
+<h3>Study plan — 4 weeks</h3>
+
+<table class="compare">
+  <tr><th>Week</th><th>Focus</th><th>LeetCode target</th></tr>
+  <tr><td>1</td><td>SELECT, WHERE, ORDER BY, LIMIT, basic aggregates</td><td>Easy SQL #1–30</td></tr>
+  <tr><td>2</td><td>GROUP BY, HAVING, INNER &amp; OUTER joins, subqueries</td><td>Easy + Medium #1–40</td></tr>
+  <tr><td>3</td><td>Window functions, CTEs, UNION, EXISTS</td><td>Medium + first Hards</td></tr>
+  <tr><td>4</td><td>Optimization, indexes, design questions, mock interviews</td><td>Top SQL 50 + Hard</td></tr>
+</table>
+
+<h3>Top interview questions — quick answers</h3>
+
+<div class="interview-q">
+  <div class="interview-title">Top SQL Interview Q&amp;A</div>
+  <div class="qa"><div class="q">DDL vs DML?</div><div class="a">DDL defines schema (CREATE, ALTER, DROP). DML manipulates rows (INSERT, UPDATE, DELETE, SELECT).</div></div>
+  <div class="qa"><div class="q">DELETE vs TRUNCATE vs DROP?</div><div class="a">DELETE removes rows (slow, logged, rollback OK). TRUNCATE removes all rows fast. DROP removes the table itself.</div></div>
+  <div class="qa"><div class="q">PRIMARY KEY vs UNIQUE?</div><div class="a">PK: one per table, NOT NULL, identifies the row. UNIQUE: many allowed, NULLs allowed.</div></div>
+  <div class="qa"><div class="q">WHERE vs HAVING?</div><div class="a">WHERE filters rows before grouping; HAVING filters groups after aggregation. HAVING can use aggregates.</div></div>
+  <div class="qa"><div class="q">INNER vs LEFT JOIN?</div><div class="a">INNER returns matches only. LEFT returns all left rows, NULLs where no right match.</div></div>
+  <div class="qa"><div class="q">UNION vs UNION ALL?</div><div class="a">UNION removes duplicates (slow). UNION ALL keeps everything (fast).</div></div>
+  <div class="qa"><div class="q">Why is NULL handling tricky?</div><div class="a">NULL = unknown. NULL = NULL is NULL, not true. Use IS NULL / IS NOT NULL. Aggregates ignore NULL except COUNT(*).</div></div>
+  <div class="qa"><div class="q">Clustered vs Non-clustered index?</div><div class="a">Clustered determines physical row order (one per table). Non-clustered is a separate structure pointing to rows (many allowed).</div></div>
+  <div class="qa"><div class="q">What is the ACID property?</div><div class="a">Atomicity, Consistency, Isolation, Durability — the four guarantees of a transactional database.</div></div>
+  <div class="qa"><div class="q">What are the isolation levels?</div><div class="a">READ UNCOMMITTED → READ COMMITTED → REPEATABLE READ → SERIALIZABLE. Each prevents progressively more anomalies.</div></div>
+  <div class="qa"><div class="q">RANK vs DENSE_RANK vs ROW_NUMBER?</div><div class="a">ROW_NUMBER: always unique. RANK: ties share rank, next is skipped (1,2,2,4). DENSE_RANK: ties share rank, no skip (1,2,2,3).</div></div>
+  <div class="qa"><div class="q">View vs Materialized View?</div><div class="a">View re-runs every query. Materialized view stores results and must be refreshed; faster reads, possibly stale.</div></div>
+  <div class="qa"><div class="q">When does an index NOT help?</div><div class="a">Leading wildcards in LIKE, functions wrapping the column, very small tables, low-selectivity columns.</div></div>
+  <div class="qa"><div class="q">Normalization vs Denormalization?</div><div class="a">Normalization: reduce redundancy, enforce integrity (good for OLTP). Denormalization: duplicate data for read speed (good for OLAP / analytics).</div></div>
+  <div class="qa"><div class="q">How would you optimize a slow query?</div><div class="a">EXPLAIN it → check for full scans → add appropriate indexes → reduce columns → push down filters → avoid functions on indexed cols → consider denormalization for hot paths.</div></div>
+</div>
+
+<h3>The 60-second SQL syntax reference</h3>
+
+<pre><code>SELECT col1, col2, AGG(col3) AS alias
+FROM table1 t1
+JOIN table2 t2 ON t1.id = t2.t1_id
+LEFT JOIN table3 t3 ON ...
+WHERE t1.col &gt; 0 AND t2.status IN ('A', 'B')
+GROUP BY col1, col2
+HAVING SUM(col3) &gt; 100
+ORDER BY col1 DESC
+LIMIT 10 OFFSET 20;</code></pre>
+
+<h3>Resources</h3>
+<ul>
+  <li><strong>LeetCode SQL 50</strong> — leetcode.com/study-plan/sql-free — the canonical set.</li>
+  <li><strong>HackerRank SQL</strong> — basic, intermediate, advanced.</li>
+  <li><strong>Mode SQL Tutorial</strong> — mode.com/sql-tutorial — analytics-focused.</li>
+  <li><strong>PostgreSQL Exercises</strong> — pgexercises.com — interactive.</li>
+  <li><strong>SQLZoo</strong> — sqlzoo.net — gentle intro.</li>
+  <li><strong>Use The Index, Luke</strong> — use-the-index-luke.com — best free book on SQL indexing.</li>
+</ul>
+
+<div class="tldr">
+  <div class="tldr-title">Final word</div>
+  <p>SQL is the single most durable skill in tech. The syntax has barely changed in 30 years. Master joins, master window functions, learn to read an EXPLAIN plan, and understand transactions — and you'll be effective at every data layer of every company you join. Drill the patterns in this book until they're reflexes. That's the difference between someone who writes SQL and someone who <em>thinks</em> in SQL.</p>
+</div>
+
+<footer>
+  SQL Notes · The Complete Interview Handbook · 2026 Edition
+</footer>
+
+</main>
+</div>
+
+</body>
+</html>

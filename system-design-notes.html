@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>System Design — The Complete Interview Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --bg-2: #efeadf;
+    --ink: #1a1814;
+    --ink-soft: #4a4538;
+    --rule: #d8d1c0;
+    --accent: #c5460b;
+    --accent-2: #1f4d3f;
+    --code-bg: #1a1814;
+    --code-ink: #f6f3ec;
+    --highlight: #fff3a8;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Layout ===== */
+  .wrap {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ===== Sidebar ===== */
+  aside {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px 24px;
+    border-right: 1px solid var(--rule);
+    background: var(--bg-2);
+    font-size: 13.5px;
+  }
+  aside::-webkit-scrollbar { width: 6px; }
+  aside::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+  .brand {
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .brand em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .brand-sub {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+
+  nav ol {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    counter-reset: section;
+  }
+  nav .group-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 18px 0 8px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+  }
+  nav a {
+    display: block;
+    padding: 4px 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s, padding 0.15s;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+  }
+  nav a:hover {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    padding-left: 14px;
+  }
+
+  /* ===== Main content ===== */
+  main {
+    padding: 56px 64px 120px 64px;
+    max-width: 880px;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 64px;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0 0 20px 0;
+  }
+  h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .lede {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 640px;
+  }
+
+  /* ===== Headings ===== */
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 80px 0 8px 0;
+    color: var(--ink);
+    position: relative;
+  }
+  h2::before {
+    content: attr(data-num);
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    margin: 48px 0 12px 0;
+    color: var(--ink);
+  }
+  h4 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 28px 0 8px 0;
+    color: var(--ink);
+    text-transform: none;
+  }
+
+  p { margin: 0 0 16px 0; }
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+
+  ul, ol {
+    margin: 0 0 16px 0;
+    padding-left: 22px;
+  }
+  li { margin-bottom: 8px; }
+
+  /* ===== Code & callouts ===== */
+  code {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    background: rgba(26, 24, 20, 0.06);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent-2);
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 20px 24px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 16px 0 20px 0;
+    border-left: 3px solid var(--accent);
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  .callout {
+    background: var(--bg-2);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .example {
+    background: #fff8e8;
+    border: 1px solid #e8d896;
+    padding: 18px 22px;
+    margin: 18px 0;
+    border-radius: 4px;
+  }
+  .example-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a6a00;
+    margin-bottom: 8px;
+  }
+  .example p:last-child { margin-bottom: 0; }
+
+  /* ===== Compare table ===== */
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14.5px;
+  }
+  .compare th, .compare td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .compare th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--bg-2);
+    font-weight: 500;
+  }
+  .compare tr:last-child td { border-bottom: 0; }
+
+  /* ===== ASCII diagram ===== */
+  .diagram {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    border-radius: 4px;
+    margin: 20px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ===== TL;DR card ===== */
+  .tldr {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 22px 26px;
+    border-radius: 4px;
+    margin: 24px 0;
+  }
+  .tldr-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #f5b97c;
+    margin-bottom: 8px;
+  }
+  .tldr p { margin: 0; font-family: var(--serif); font-size: 17px; line-height: 1.5; }
+
+  hr.section-break {
+    border: 0;
+    height: 1px;
+    background: var(--rule);
+    margin: 64px 0;
+  }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 920px) {
+    .wrap { grid-template-columns: 1fr; }
+    aside {
+      position: relative;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    main { padding: 32px 24px 80px 24px; }
+    h1 { font-size: 42px; }
+    h2 { font-size: 28px; }
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- ============== SIDEBAR ============== -->
+<aside>
+  <div class="brand">System <em>Design</em></div>
+  <div class="brand-sub">Complete Interview Notes</div>
+
+  <nav>
+    <div class="group-title">Foundations</div>
+    <a href="#intro">01 · What is System Design</a>
+    <a href="#hld-lld">02 · HLD vs LLD</a>
+    <a href="#framework">03 · Interview Framework</a>
+    <a href="#estimation">04 · Back-of-Envelope Math</a>
+
+    <div class="group-title">High-Level Design</div>
+    <a href="#scalability">05 · Scalability</a>
+    <a href="#latency">06 · Latency &amp; Throughput</a>
+    <a href="#lb">07 · Load Balancing</a>
+    <a href="#caching">08 · Caching</a>
+    <a href="#cdn">09 · CDN</a>
+    <a href="#db">10 · SQL vs NoSQL</a>
+    <a href="#index">11 · Indexing</a>
+    <a href="#replication">12 · Replication</a>
+    <a href="#sharding">13 · Sharding</a>
+    <a href="#cap">14 · CAP Theorem</a>
+    <a href="#acid">15 · ACID vs BASE</a>
+    <a href="#consistency">16 · Consistency Models</a>
+    <a href="#hashing">17 · Consistent Hashing</a>
+    <a href="#mq">18 · Message Queues</a>
+    <a href="#micro">19 · Microservices</a>
+    <a href="#gateway">20 · API Gateway</a>
+    <a href="#ratelimit">21 · Rate Limiting</a>
+    <a href="#proxy">22 · Proxies</a>
+    <a href="#comm">23 · Communication Protocols</a>
+    <a href="#bloom">24 · Bloom Filters</a>
+    <a href="#distsys">25 · Distributed Concepts</a>
+
+    <div class="group-title">Low-Level Design</div>
+    <a href="#oop">26 · OOP Pillars</a>
+    <a href="#solid">27 · SOLID Principles</a>
+    <a href="#uml">28 · UML Diagrams</a>
+    <a href="#creational">29 · Creational Patterns</a>
+    <a href="#structural">30 · Structural Patterns</a>
+    <a href="#behavioral">31 · Behavioral Patterns</a>
+
+    <div class="group-title">Famous HLD Problems</div>
+    <a href="#url-shortener">32 · URL Shortener</a>
+    <a href="#twitter">33 · Twitter Feed</a>
+    <a href="#chat">34 · WhatsApp / Chat</a>
+    <a href="#uber">35 · Uber / Ride-share</a>
+    <a href="#netflix">36 · Netflix / Streaming</a>
+
+    <div class="group-title">Famous LLD Problems</div>
+    <a href="#parking">37 · Parking Lot</a>
+    <a href="#elevator">38 · Elevator System</a>
+    <a href="#splitwise">39 · Splitwise</a>
+
+    <div class="group-title">Closing</div>
+    <a href="#checklist">40 · Final Checklist</a>
+  </nav>
+</aside>
+
+<!-- ============== MAIN ============== -->
+<main>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="eyebrow">The Complete Interview Companion · 2026 Edition</div>
+  <h1>System Design,<br/><em>simply explained.</em></h1>
+  <p class="lede">Everything you need to walk into a system design round at Google, Amazon, Meta, Microsoft, or any MNC — every concept, every pattern, every classic problem — written in plain English with real-world examples.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- PART 1: FOUNDATIONS                                -->
+<!-- ================================================== -->
+
+<h2 id="intro" data-num="Chapter 01">What is System Design?</h2>
+
+<p>System design is the process of <strong>defining the architecture, components, modules, interfaces, and data flow</strong> of a software system to satisfy a set of requirements. In simple words — it's the blueprint of how a product like Instagram or YouTube is built behind the scenes.</p>
+
+<p>When you open YouTube and a video starts playing in 200 milliseconds — that smoothness is not magic. It's the result of dozens of carefully designed pieces: load balancers, caches, CDNs, databases spread across the world, message queues, and more. System design is the study of <em>why</em> each piece exists and <em>how</em> they fit together.</p>
+
+<div class="example">
+  <div class="example-title">Real-world analogy</div>
+  <p>Imagine you're opening a restaurant. You need to decide: how many tables (capacity), how many waiters (servers), where the kitchen is (database), how orders flow from waiter to chef (API contracts), what happens when 500 customers arrive at once (scaling), and what if a waiter quits (fault tolerance). System design is exactly this — but for software.</p>
+</div>
+
+<h4>Why interviewers care</h4>
+<p>Coding rounds test if you can build a feature. System design rounds test if you can build a <strong>product</strong>. They reveal how you think about trade-offs, how you handle ambiguity, and whether you can communicate technical decisions clearly — exactly what senior engineers do every day.</p>
+
+
+<h2 id="hld-lld" data-num="Chapter 02">HLD vs LLD — What's the difference?</h2>
+
+<p>Interviewers usually split system design into two flavors. Knowing which one you're being asked is half the battle.</p>
+
+<table class="compare">
+  <tr><th>Aspect</th><th>HLD (High-Level Design)</th><th>LLD (Low-Level Design)</th></tr>
+  <tr><td>Focus</td><td>Architecture — the big boxes</td><td>Classes, methods, relationships</td></tr>
+  <tr><td>Audience</td><td>Architects, Tech Leads, Product</td><td>Developers who will code it</td></tr>
+  <tr><td>Output</td><td>Block diagrams, component flow</td><td>UML class diagrams, code structure</td></tr>
+  <tr><td>Example question</td><td>"Design Instagram"</td><td>"Design a Parking Lot system"</td></tr>
+  <tr><td>What you discuss</td><td>Load balancers, DBs, caches, queues, CDN, scaling</td><td>OOP, SOLID, design patterns, interfaces, classes</td></tr>
+  <tr><td>Typical round duration</td><td>45–60 minutes</td><td>45–60 minutes</td></tr>
+</table>
+
+<div class="callout">
+  <div class="callout-title">Quick rule</div>
+  <p>If the problem starts with <em>"Design X"</em> and X is a product (Twitter, YouTube, Dropbox) → it's HLD. If X is an entity (Parking Lot, Elevator, Snake & Ladder) → it's LLD.</p>
+</div>
+
+
+<h2 id="framework" data-num="Chapter 03">The Universal Interview Framework</h2>
+
+<p>Never start drawing immediately. Follow this 6-step framework — it works for any HLD question, in any company.</p>
+
+<h4>Step 1 — Clarify Requirements (5 min)</h4>
+<p>Ask questions to narrow down the scope. Split into <strong>Functional</strong> (what the system does) and <strong>Non-Functional</strong> (how well it does it).</p>
+<ul>
+  <li><strong>Functional:</strong> "Should users be able to like a post? Comment? Repost?"</li>
+  <li><strong>Non-Functional:</strong> "How many daily active users? What's the read:write ratio? Latency target?"</li>
+</ul>
+
+<h4>Step 2 — Capacity Estimation (5 min)</h4>
+<p>Do back-of-envelope math. Number of users × actions per day → reads/sec, writes/sec, storage, bandwidth. (Full guide in Chapter 04.)</p>
+
+<h4>Step 3 — API Design (5 min)</h4>
+<p>Sketch 3–4 endpoints. Show you think about contracts before code.</p>
+<pre><code>POST /tweets         { userId, text, mediaUrl }
+GET  /feed/{userId}  → list of tweets
+POST /follow         { followerId, followeeId }</code></pre>
+
+<h4>Step 4 — High-Level Architecture (15 min)</h4>
+<p>Draw the boxes: Client → CDN → Load Balancer → App Servers → Cache → DB → Queue → Workers. This is the headline diagram.</p>
+
+<h4>Step 5 — Deep Dive (15 min)</h4>
+<p>Pick 1–2 components and zoom in. Database schema. Cache strategy. How feed is generated. This is where you score the most points.</p>
+
+<h4>Step 6 — Bottlenecks & Trade-offs (5 min)</h4>
+<p>Talk about what breaks at scale and what you'd do about it. Mention monitoring, alerts, single points of failure.</p>
+
+<div class="tldr">
+  <div class="tldr-title">Remember</div>
+  <p>Interviewers don't expect a perfect system. They want to see <em>structured thinking, clear communication, and awareness of trade-offs.</em></p>
+</div>
+
+
+<h2 id="estimation" data-num="Chapter 04">Back-of-the-Envelope Estimation</h2>
+
+<p>You don't need to be precise — you need to be in the right zip code. Learn these numbers by heart:</p>
+
+<table class="compare">
+  <tr><th>Item</th><th>Approx Value</th></tr>
+  <tr><td>1 KB</td><td>10³ bytes</td></tr>
+  <tr><td>1 MB</td><td>10⁶ bytes</td></tr>
+  <tr><td>1 GB</td><td>10⁹ bytes</td></tr>
+  <tr><td>1 TB</td><td>10¹² bytes</td></tr>
+  <tr><td>Seconds in a day</td><td>~86,400 (≈10⁵)</td></tr>
+  <tr><td>L1 cache reference</td><td>0.5 ns</td></tr>
+  <tr><td>Main memory reference</td><td>100 ns</td></tr>
+  <tr><td>SSD random read</td><td>150 µs</td></tr>
+  <tr><td>Disk seek</td><td>10 ms</td></tr>
+  <tr><td>Round trip in same datacenter</td><td>0.5 ms</td></tr>
+  <tr><td>Round trip across continents</td><td>150 ms</td></tr>
+</table>
+
+<div class="example">
+  <div class="example-title">Worked example — Designing Twitter</div>
+  <p><strong>Assumption:</strong> 300M daily active users, each posts 2 tweets/day, average tweet = 300 bytes.</p>
+  <p><strong>Writes/sec:</strong> 300M × 2 / 86,400 ≈ <strong>7,000 tweets per second</strong>.</p>
+  <p><strong>Reads/sec:</strong> Assume each user opens feed 10×/day → 300M × 10 / 86,400 ≈ <strong>35,000 reads/sec</strong>. Read:write ratio is 5:1 — heavily read-optimized.</p>
+  <p><strong>Storage/year:</strong> 600M tweets/day × 300 bytes × 365 ≈ <strong>65 TB/year</strong> of raw text. Add media → ~10× that.</p>
+</div>
+
+<hr class="section-break"/>
+
+<!-- ================================================== -->
+<!-- PART 2: HIGH-LEVEL DESIGN                          -->
+<!-- ================================================== -->
+
+<h2 id="scalability" data-num="Chapter 05">Scalability</h2>
+
+<p>Scalability is the ability of a system to handle <strong>more load</strong> by adding resources. There are two flavors:</p>
+
+<h3>Vertical Scaling (Scale Up)</h3>
+<p>Add more power to a single machine — more CPU, more RAM, faster disk. Simple but limited (you eventually hit the biggest machine money can buy) and creates a single point of failure.</p>
+
+<h3>Horizontal Scaling (Scale Out)</h3>
+<p>Add more machines and distribute load across them. Theoretically unlimited but introduces complexity — coordination, networking, consistency.</p>
+
+<table class="compare">
+  <tr><th></th><th>Vertical</th><th>Horizontal</th></tr>
+  <tr><td>Cost</td><td>Cheap initially, expensive at top</td><td>Linear cost growth</td></tr>
+  <tr><td>Complexity</td><td>Low</td><td>High (load balancing, sync)</td></tr>
+  <tr><td>Limit</td><td>Hardware ceiling</td><td>Theoretically unlimited</td></tr>
+  <tr><td>Downtime</td><td>Yes, to upgrade</td><td>No, add servers live</td></tr>
+  <tr><td>Failure tolerance</td><td>Single point of failure</td><td>Built-in redundancy</td></tr>
+</table>
+
+<div class="example">
+  <div class="example-title">Real-world example</div>
+  <p>A traditional bank's mainframe was vertical scaling — one giant machine. Netflix, on the other hand, runs on thousands of small AWS servers — horizontal. When you scroll Netflix, hundreds of these machines together handle the request.</p>
+</div>
+
+
+<h2 id="latency" data-num="Chapter 06">Latency vs Throughput</h2>
+
+<p>These two are often confused. They are not the same thing.</p>
+
+<ul>
+  <li><strong>Latency</strong> = time taken for <em>one</em> request to complete. Measured in ms. Lower is better.</li>
+  <li><strong>Throughput</strong> = number of requests completed per second. Measured in RPS (requests/sec). Higher is better.</li>
+</ul>
+
+<div class="example">
+  <div class="example-title">Highway analogy</div>
+  <p>Imagine a highway. <strong>Latency</strong> is how long it takes one car to cross from start to end. <strong>Throughput</strong> is how many cars cross the toll booth per minute. A wider highway (more lanes) increases throughput but doesn't necessarily reduce latency. A faster speed limit reduces latency but doesn't change how many cars fit.</p>
+</div>
+
+<p>In interviews, always state your target — e.g., <em>"P99 latency under 200ms, throughput of 10K RPS."</em> P99 means 99% of requests are faster than this number.</p>
+
+
+<h2 id="lb" data-num="Chapter 07">Load Balancing</h2>
+
+<p>A <strong>load balancer</strong> sits between clients and your servers, distributing incoming traffic across multiple machines. It also detects when a server is down and stops sending requests to it.</p>
+
+<div class="diagram">           ┌──────────────┐
+           │   Clients    │
+           └──────┬───────┘
+                  │
+           ┌──────▼───────┐
+           │ Load Balancer│
+           └──┬───┬───┬───┘
+              │   │   │
+        ┌─────▼┐ ┌▼──┐ ┌▼──┐
+        │ S1   │ │S2 │ │S3 │
+        └──────┘ └───┘ └───┘</div>
+
+<h3>Layer 4 vs Layer 7 Load Balancing</h3>
+<ul>
+  <li><strong>L4 (Transport):</strong> Routes based on IP &amp; port. Fast but blind to content. Example: AWS NLB.</li>
+  <li><strong>L7 (Application):</strong> Reads HTTP headers, URL, cookies. Can route <code>/api/users</code> to one server and <code>/api/videos</code> to another. Slower but smarter. Example: NGINX, AWS ALB.</li>
+</ul>
+
+<h3>Algorithms</h3>
+<ol>
+  <li><strong>Round Robin</strong> — rotate through servers in order. Simple, fair if all servers are equal.</li>
+  <li><strong>Weighted Round Robin</strong> — give powerful servers more requests.</li>
+  <li><strong>Least Connections</strong> — send next request to the server with fewest active connections. Great for long-lived connections.</li>
+  <li><strong>IP Hash</strong> — same client IP always lands on the same server. Used for session stickiness.</li>
+  <li><strong>Least Response Time</strong> — pick the fastest-responding server.</li>
+</ol>
+
+<div class="example">
+  <div class="example-title">Example</div>
+  <p>When you visit <code>amazon.in</code>, DNS gives you the load balancer's IP. The LB picks (say, via least connections) one of 10,000 servers and forwards your request. If one server crashes mid-request, the LB notices via health checks and removes it from rotation within seconds.</p>
+</div>
+
+
+<h2 id="caching" data-num="Chapter 08">Caching</h2>
+
+<p>A cache is a small, fast storage layer that holds recently-used data to avoid recomputing or refetching. Caches are the single biggest reason modern apps feel fast.</p>
+
+<div class="tldr">
+  <div class="tldr-title">The cache rule</div>
+  <p>Memory is ~100× faster than disk. Disk is ~100× faster than network. Caching pulls data closer to the user along this hierarchy.</p>
+</div>
+
+<h3>Where caches live</h3>
+<ul>
+  <li><strong>Browser cache</strong> — your browser stores images, CSS, JS.</li>
+  <li><strong>CDN cache</strong> — edge servers worldwide (e.g., Cloudflare).</li>
+  <li><strong>Application cache</strong> — in-memory in your app server.</li>
+  <li><strong>Distributed cache</strong> — Redis, Memcached — shared across servers.</li>
+  <li><strong>Database cache</strong> — query result cache inside the DB.</li>
+</ul>
+
+<h3>Caching Strategies</h3>
+
+<h4>1. Cache-Aside (Lazy Loading)</h4>
+<p>App checks cache → if miss, reads DB → writes to cache → returns. Most common pattern.</p>
+<pre><code>def get_user(id):
+    user = cache.get(id)
+    if user is None:
+        user = db.query("SELECT * FROM users WHERE id=?", id)
+        cache.set(id, user, ttl=3600)
+    return user</code></pre>
+
+<h4>2. Read-Through</h4>
+<p>App talks only to cache. Cache itself fetches from DB on miss. Simpler app code.</p>
+
+<h4>3. Write-Through</h4>
+<p>Every write goes to cache <em>and</em> DB simultaneously. Cache always in sync, but writes are slower.</p>
+
+<h4>4. Write-Back (Write-Behind)</h4>
+<p>Writes go to cache first, async to DB later. Very fast writes but risk of data loss if cache crashes.</p>
+
+<h4>5. Write-Around</h4>
+<p>Writes go directly to DB, skipping cache. Good when written data is rarely read again.</p>
+
+<h3>Eviction Policies</h3>
+<p>Cache is small — it must throw things out. How does it choose?</p>
+<ul>
+  <li><strong>LRU (Least Recently Used)</strong> — most common. Evict what hasn't been touched in a while.</li>
+  <li><strong>LFU (Least Frequently Used)</strong> — evict what's been accessed least often.</li>
+  <li><strong>FIFO</strong> — oldest in is oldest out.</li>
+  <li><strong>TTL</strong> — evict after a fixed time.</li>
+</ul>
+
+<div class="example">
+  <div class="example-title">Real example — Instagram feed</div>
+  <p>When you open Instagram, your feed isn't computed from scratch. It was pre-computed and stored in Redis. The first 50 posts load in 30ms because they come from cache — not from a database with 500M rows.</p>
+</div>
+
+
+<h2 id="cdn" data-num="Chapter 09">Content Delivery Network (CDN)</h2>
+
+<p>A CDN is a network of servers spread around the globe that store copies of your static content (images, videos, CSS, JS) close to the user.</p>
+
+<p>If you're in Chennai and a website's main server is in Virginia, every image would take ~250ms to reach you. With a CDN, the same image is cached at a server in Mumbai or Chennai — it arrives in 10ms.</p>
+
+<h3>Two flavors</h3>
+<ul>
+  <li><strong>Pull CDN</strong> — fetches content from origin on first request, caches it. Cheaper, used by most websites.</li>
+  <li><strong>Push CDN</strong> — you upload content directly to the CDN. Used for large videos / Netflix-style streaming.</li>
+</ul>
+
+<div class="example">
+  <div class="example-title">Real example</div>
+  <p>When you watch a YouTube video, it isn't streamed from California — it's streamed from a Google edge server inside your ISP's network. That's why 4K loads instantly.</p>
+</div>
+
+
+<h2 id="db" data-num="Chapter 10">SQL vs NoSQL</h2>
+
+<table class="compare">
+  <tr><th></th><th>SQL (Relational)</th><th>NoSQL</th></tr>
+  <tr><td>Examples</td><td>MySQL, PostgreSQL, Oracle</td><td>MongoDB, Cassandra, DynamoDB, Redis</td></tr>
+  <tr><td>Schema</td><td>Fixed, defined upfront</td><td>Flexible / schemaless</td></tr>
+  <tr><td>Scaling</td><td>Vertical mostly</td><td>Horizontal natively</td></tr>
+  <tr><td>Consistency</td><td>Strong (ACID)</td><td>Often eventual (BASE)</td></tr>
+  <tr><td>Joins</td><td>Yes, powerful</td><td>Limited or none</td></tr>
+  <tr><td>Best for</td><td>Banking, ERP, structured data</td><td>Social feeds, IoT, analytics, huge scale</td></tr>
+</table>
+
+<h3>NoSQL sub-types</h3>
+<ul>
+  <li><strong>Key-Value</strong> (Redis, DynamoDB) — like a giant hash map. Ultra-fast lookups.</li>
+  <li><strong>Document</strong> (MongoDB) — stores JSON-like documents. Each row can have different fields.</li>
+  <li><strong>Column-Family</strong> (Cassandra, HBase) — stores rows where each can have millions of columns. Great for time-series.</li>
+  <li><strong>Graph</strong> (Neo4j) — nodes and edges. Best for social networks, fraud detection, recommendations.</li>
+</ul>
+
+<div class="example">
+  <div class="example-title">When to pick what</div>
+  <p><strong>Bank balance:</strong> SQL — must be ACID, no room for "eventually correct". <strong>Instagram likes count:</strong> NoSQL — being off by 2 likes for 1 second is fine. <strong>Friend recommendations:</strong> Graph DB — relationships are first-class.</p>
+</div>
+
+
+<h2 id="index" data-num="Chapter 11">Database Indexing</h2>
+
+<p>An index is like the back-of-book index — it lets the DB jump straight to the row without scanning the whole table.</p>
+
+<p>Without an index, looking up <code>WHERE email = 'a@b.com'</code> in a 100M-row table means reading all 100M rows. With an index on email, the DB uses a B+ tree to find it in ~log(100M) ≈ 27 steps.</p>
+
+<h3>Types of indexes</h3>
+<ul>
+  <li><strong>Primary index</strong> — automatically on the primary key. Unique.</li>
+  <li><strong>Secondary index</strong> — explicitly created on other columns.</li>
+  <li><strong>Composite index</strong> — on multiple columns, e.g., <code>(country, city)</code>. Order matters!</li>
+  <li><strong>Unique index</strong> — also enforces uniqueness.</li>
+  <li><strong>Full-text index</strong> — for searching text inside long strings.</li>
+</ul>
+
+<div class="callout">
+  <div class="callout-title">Watch out</div>
+  <p>Indexes speed up reads but slow down writes (every insert must update the index). Don't index everything — only what you query.</p>
+</div>
+
+
+<h2 id="replication" data-num="Chapter 12">Database Replication</h2>
+
+<p>Replication = keeping multiple copies of the same data on different machines. Why? For <strong>availability</strong> (one dies, others survive) and <strong>read scaling</strong> (multiple replicas handle reads).</p>
+
+<h3>Master-Slave (Primary-Replica)</h3>
+<p>One master accepts all writes. Slaves copy from master and serve reads. Most common setup.</p>
+
+<div class="diagram">      Writes →  ┌─────────┐
+                │ Master  │
+                └────┬────┘
+                     │ replication
+            ┌────────┼────────┐
+            ▼        ▼        ▼
+         ┌─────┐ ┌─────┐  ┌─────┐
+         │ R1  │ │ R2  │  │ R3  │   ← Reads
+         └─────┘ └─────┘  └─────┘</div>
+
+<h3>Master-Master (Multi-Primary)</h3>
+<p>Multiple nodes accept writes. Higher write capacity but conflict resolution is painful.</p>
+
+<h3>Sync vs Async replication</h3>
+<ul>
+  <li><strong>Synchronous</strong> — master waits for replicas to confirm before acknowledging. Safer, slower.</li>
+  <li><strong>Asynchronous</strong> — master replies immediately, replicas catch up later. Faster, but if master dies you lose the last few seconds.</li>
+</ul>
+
+
+<h2 id="sharding" data-num="Chapter 13">Sharding (Partitioning)</h2>
+
+<p>Sharding means splitting one big database into multiple smaller databases, each holding a subset of the data. Each shard is independent.</p>
+
+<h3>Sharding strategies</h3>
+<ol>
+  <li><strong>Range-based</strong> — users A–F on shard 1, G–M on shard 2... Easy but creates hotspots.</li>
+  <li><strong>Hash-based</strong> — <code>shard = hash(userId) % N</code>. Even distribution but resharding when N changes is painful (see Consistent Hashing).</li>
+  <li><strong>Geographic</strong> — Asian users on Asian servers, EU on EU.</li>
+  <li><strong>Directory-based</strong> — a lookup service maps each key to its shard. Flexible but the directory itself is a bottleneck.</li>
+</ol>
+
+<div class="callout">
+  <div class="callout-title">Sharding pain points</div>
+  <p>(1) Cross-shard joins are hard. (2) Rebalancing when traffic skews. (3) Unique IDs must be global. (4) Transactions across shards need distributed protocols.</p>
+</div>
+
+
+<h2 id="cap" data-num="Chapter 14">CAP Theorem</h2>
+
+<p>The most famous theorem in distributed systems. It says that a distributed database can guarantee only <strong>2 out of 3</strong> of these properties:</p>
+
+<ul>
+  <li><strong>C — Consistency:</strong> every read returns the latest write or an error.</li>
+  <li><strong>A — Availability:</strong> every request gets a response (maybe stale).</li>
+  <li><strong>P — Partition Tolerance:</strong> system keeps working even if the network splits.</li>
+</ul>
+
+<p>In reality, network partitions <em>will</em> happen — so you must always choose P. The real choice is between <strong>C and A</strong>:</p>
+
+<table class="compare">
+  <tr><th>System type</th><th>Choice</th><th>Examples</th></tr>
+  <tr><td>CP — Sacrifice availability for consistency</td><td>Refuse to answer if unsure</td><td>MongoDB, HBase, Redis (single)</td></tr>
+  <tr><td>AP — Sacrifice consistency for availability</td><td>Always answer, may be stale</td><td>Cassandra, DynamoDB, CouchDB</td></tr>
+  <tr><td>CA — Only possible without partitions</td><td>(Theoretical for distributed)</td><td>Traditional single-node SQL</td></tr>
+</table>
+
+<div class="example">
+  <div class="example-title">Real choice</div>
+  <p><strong>Bank transfer:</strong> CP — better to say "try again" than show wrong balance. <strong>Instagram feed:</strong> AP — better to show a slightly old feed than no feed at all.</p>
+</div>
+
+
+<h2 id="acid" data-num="Chapter 15">ACID vs BASE</h2>
+
+<h3>ACID (SQL world)</h3>
+<ul>
+  <li><strong>Atomicity</strong> — all or nothing. If transfer fails halfway, nothing happens.</li>
+  <li><strong>Consistency</strong> — DB always moves from valid state to valid state.</li>
+  <li><strong>Isolation</strong> — concurrent transactions don't see each other's half-baked work.</li>
+  <li><strong>Durability</strong> — once committed, data survives crashes.</li>
+</ul>
+
+<h3>BASE (NoSQL world)</h3>
+<ul>
+  <li><strong>Basically Available</strong> — system always responds.</li>
+  <li><strong>Soft state</strong> — state may change over time (even without writes).</li>
+  <li><strong>Eventually consistent</strong> — given enough time, all replicas converge.</li>
+</ul>
+
+
+<h2 id="consistency" data-num="Chapter 16">Consistency Models</h2>
+
+<ul>
+  <li><strong>Strong consistency</strong> — every read sees the latest write. Slow at scale.</li>
+  <li><strong>Eventual consistency</strong> — replicas converge eventually. Used by DNS, Instagram likes.</li>
+  <li><strong>Causal consistency</strong> — if A happens-before B, all nodes see A before B. (Used in chat apps so messages don't appear out of order.)</li>
+  <li><strong>Read-your-writes</strong> — you always see what you just wrote, even if others don't yet.</li>
+  <li><strong>Monotonic reads</strong> — once you've seen a value, you never see an older one.</li>
+</ul>
+
+
+<h2 id="hashing" data-num="Chapter 17">Consistent Hashing</h2>
+
+<p>The classic problem: you have N servers and use <code>server = hash(key) % N</code> to route requests. Now you add or remove a server — suddenly almost <em>every</em> key remaps. Cache invalidated. Disaster.</p>
+
+<p><strong>Consistent hashing</strong> solves this elegantly. Imagine a circular ring (0 to 2³²). Hash each server onto the ring. Hash each key onto the ring. A key is owned by the next server clockwise on the ring.</p>
+
+<div class="diagram">              Key K1
+               ↓
+       ┌───────●───────┐
+       │       │       │
+   Server A           Server B
+       │       │       │
+       └───────●───────┘
+              Key K2 → owned by B</div>
+
+<p>When a server is added or removed, only ~1/N keys move — not all. This is how Cassandra, DynamoDB, and most distributed caches scale.</p>
+
+<p><strong>Virtual nodes:</strong> Each physical server is mapped to many points on the ring, giving smoother distribution.</p>
+
+
+<h2 id="mq" data-num="Chapter 18">Message Queues &amp; Pub/Sub</h2>
+
+<p>A message queue decouples producers from consumers. Producer drops a message → queue holds it → consumer picks it up when ready.</p>
+
+<div class="diagram">  Producer →  [ Q1 ][ Q2 ][ Q3 ]  → Consumer</div>
+
+<h3>Why use queues?</h3>
+<ul>
+  <li><strong>Decoupling</strong> — services don't need to know about each other.</li>
+  <li><strong>Buffering</strong> — handles traffic spikes.</li>
+  <li><strong>Async processing</strong> — don't make the user wait for slow tasks (email, video encoding).</li>
+  <li><strong>Retries</strong> — if consumer fails, message stays in queue.</li>
+</ul>
+
+<h3>Queue vs Pub/Sub</h3>
+<ul>
+  <li><strong>Queue (point-to-point):</strong> one message → one consumer. Example: RabbitMQ, SQS.</li>
+  <li><strong>Pub/Sub (broadcast):</strong> one message → all subscribers. Example: Kafka, Google Pub/Sub.</li>
+</ul>
+
+<h3>Kafka in plain English</h3>
+<p>Kafka is a distributed commit log. Producers append messages to topics. Topics are split into partitions for parallelism. Consumers read at their own pace using offsets. It can handle millions of messages per second and replay history.</p>
+
+<div class="example">
+  <div class="example-title">Real example — Uber</div>
+  <p>When you book a ride, the request goes to a Kafka topic. Multiple services consume it: pricing, driver matching, ETA calculation, fraud detection — all in parallel, all decoupled. If fraud detection is slow, ride matching doesn't wait.</p>
+</div>
+
+
+<h2 id="micro" data-num="Chapter 19">Microservices vs Monolith</h2>
+
+<table class="compare">
+  <tr><th></th><th>Monolith</th><th>Microservices</th></tr>
+  <tr><td>Codebase</td><td>One</td><td>Many small ones</td></tr>
+  <tr><td>Deployment</td><td>All-at-once</td><td>Independent per service</td></tr>
+  <tr><td>Scaling</td><td>Whole app together</td><td>Each service independently</td></tr>
+  <tr><td>Team structure</td><td>One big team</td><td>Small teams own services</td></tr>
+  <tr><td>Failure</td><td>One bug brings down everything</td><td>Failure isolated to one service</td></tr>
+  <tr><td>Complexity</td><td>Low at first, high later</td><td>High operational complexity</td></tr>
+</table>
+
+<div class="callout">
+  <div class="callout-title">Honest advice</div>
+  <p>Start with a monolith. Move to microservices when team size and codebase grow beyond what one team can manage. Premature microservices is one of the most common mistakes in industry.</p>
+</div>
+
+
+<h2 id="gateway" data-num="Chapter 20">API Gateway</h2>
+
+<p>In a microservices world, the client doesn't talk to 50 different services. It talks to <strong>one</strong> entry point — the API Gateway. The gateway routes, authenticates, rate-limits, logs, and aggregates.</p>
+
+<h4>Responsibilities</h4>
+<ul>
+  <li>Routing — <code>/users</code> → User Service, <code>/orders</code> → Order Service</li>
+  <li>Authentication &amp; Authorization (JWT validation)</li>
+  <li>Rate limiting</li>
+  <li>Request/response transformation</li>
+  <li>Logging &amp; metrics</li>
+  <li>SSL termination</li>
+  <li>Caching</li>
+</ul>
+
+<p><strong>Tools:</strong> Kong, AWS API Gateway, NGINX, Apigee.</p>
+
+
+<h2 id="ratelimit" data-num="Chapter 21">Rate Limiting</h2>
+
+<p>Rate limiting protects your system from being overwhelmed — by abusive users, bots, or buggy clients.</p>
+
+<h3>Algorithms</h3>
+
+<h4>1. Token Bucket</h4>
+<p>Bucket holds N tokens. Refilled at R tokens/sec. Each request consumes 1 token. No tokens → reject. Allows bursts up to bucket size. Used by AWS.</p>
+
+<h4>2. Leaky Bucket</h4>
+<p>Requests enter the bucket. Leak out at constant rate. If bucket overflows → reject. Smooths traffic.</p>
+
+<h4>3. Fixed Window</h4>
+<p>Count requests in each 1-minute window. Reset to 0 each minute. Simple but spiky at boundaries.</p>
+
+<h4>4. Sliding Window Log</h4>
+<p>Keep timestamp of each request. Count requests in the last 60s exactly. Accurate but memory-heavy.</p>
+
+<h4>5. Sliding Window Counter</h4>
+<p>Hybrid of fixed window and log. Most practical.</p>
+
+<div class="example">
+  <div class="example-title">Where it's used</div>
+  <p>Twitter: 300 tweets per 3 hours per user. GitHub: 5,000 API calls per hour per token. Login endpoints: 5 attempts per minute per IP (to prevent brute force).</p>
+</div>
+
+
+<h2 id="proxy" data-num="Chapter 22">Forward Proxy vs Reverse Proxy</h2>
+
+<ul>
+  <li><strong>Forward Proxy</strong> sits in front of <em>clients</em>. The server doesn't know who the real client is. Used for privacy, geo-bypass, content filtering. (VPN-like.)</li>
+  <li><strong>Reverse Proxy</strong> sits in front of <em>servers</em>. The client doesn't know which backend served them. Used for load balancing, caching, SSL termination. (NGINX, Cloudflare.)</li>
+</ul>
+
+<div class="diagram">Forward Proxy:   Client → [Proxy] → Internet → Server
+Reverse Proxy:   Client → Internet → [Proxy] → Server</div>
+
+
+<h2 id="comm" data-num="Chapter 23">Communication Protocols</h2>
+
+<h3>REST</h3>
+<p>HTTP-based, stateless, uses verbs (GET, POST, PUT, DELETE). Easy to debug, universally supported. The default for public APIs.</p>
+
+<h3>GraphQL</h3>
+<p>Client specifies exactly what fields it wants. One endpoint serves any query. Great for mobile apps that want to avoid over-fetching.</p>
+<pre><code>query {
+  user(id: 5) {
+    name
+    posts { title }
+  }
+}</code></pre>
+
+<h3>gRPC</h3>
+<p>Google's RPC framework using HTTP/2 and Protocol Buffers (binary, fast). 5–10× faster than REST. Used for internal microservice-to-microservice calls.</p>
+
+<h3>WebSockets</h3>
+<p>Persistent, bidirectional channel between client and server. Both sides can push at any time. Used for chat, live dashboards, multiplayer games.</p>
+
+<h3>Server-Sent Events (SSE)</h3>
+<p>One-way from server to client over HTTP. Lightweight alternative to WebSockets for notifications.</p>
+
+<h3>Long Polling</h3>
+<p>Client sends request, server holds it until data arrives or timeout. Old-school but works everywhere.</p>
+
+<table class="compare">
+  <tr><th>Use case</th><th>Best pick</th></tr>
+  <tr><td>Public API</td><td>REST</td></tr>
+  <tr><td>Mobile app, varied data needs</td><td>GraphQL</td></tr>
+  <tr><td>Internal service-to-service</td><td>gRPC</td></tr>
+  <tr><td>Real-time chat / gaming</td><td>WebSockets</td></tr>
+  <tr><td>Notifications, stock tickers</td><td>SSE</td></tr>
+</table>
+
+
+<h2 id="bloom" data-num="Chapter 24">Bloom Filters</h2>
+
+<p>A Bloom filter is a probabilistic data structure that tells you whether an element is <em>"definitely not in the set"</em> or <em>"possibly in the set"</em>. It uses very little memory.</p>
+
+<p><strong>How it works:</strong> An array of bits + several hash functions. To add an item, hash it with all functions and set those bits to 1. To check, hash again — if all bits are 1, it <em>might</em> be there; if any is 0, it's <em>definitely</em> not.</p>
+
+<div class="example">
+  <div class="example-title">Where it shines</div>
+  <p><strong>Medium / Quora:</strong> "Has this user already seen this article?" Check Bloom filter first — if no, skip the DB. Saves billions of DB queries.</p>
+  <p><strong>Chrome:</strong> Stores known malicious URLs in a Bloom filter to check every site you visit instantly.</p>
+</div>
+
+
+<h2 id="distsys" data-num="Chapter 25">Distributed System Concepts</h2>
+
+<h3>Leader Election</h3>
+<p>Among multiple nodes, one must be elected the leader to coordinate. Algorithms: Bully, Raft, Paxos, ZooKeeper-based. Used in Kafka, MongoDB replica sets, Kubernetes.</p>
+
+<h3>Heartbeats</h3>
+<p>Nodes periodically send "I'm alive" pings. Missing 3 heartbeats → declared dead. Triggers failover.</p>
+
+<h3>Gossip Protocol</h3>
+<p>Each node randomly tells a few neighbors what it knows. Information spreads exponentially. Used by Cassandra, Redis Cluster.</p>
+
+<h3>Quorum</h3>
+<p>For N replicas, require W writes and R reads such that W + R > N. Guarantees you'll read the latest write. Cassandra uses this.</p>
+
+<h3>Idempotency</h3>
+<p>An operation is idempotent if running it twice has the same effect as running it once. Critical for retries. <code>PUT /user/5 {name:"A"}</code> is idempotent; <code>POST /payments</code> usually isn't (which is why you need idempotency keys).</p>
+
+<h3>Two-Phase Commit (2PC)</h3>
+<p>Coordinator asks all nodes "can you commit?" → if all say yes, tells all to commit. Guarantees atomicity across nodes but blocks if coordinator fails.</p>
+
+<hr class="section-break"/>
+
+<!-- ================================================== -->
+<!-- PART 3: LOW-LEVEL DESIGN                           -->
+<!-- ================================================== -->
+
+<h2 id="oop" data-num="Chapter 26">OOP — The Four Pillars</h2>
+
+<h3>1. Encapsulation</h3>
+<p>Bundle data and methods inside a class, and hide internal state from outside. Like a TV remote — you press buttons, you don't see the circuit.</p>
+<pre><code>class BankAccount {
+    private double balance;          // hidden
+    public void deposit(double x) {   // controlled access
+        if (x > 0) balance += x;
+    }
+}</code></pre>
+
+<h3>2. Inheritance</h3>
+<p>A class inherits properties from a parent. Reuse code, model "is-a" relationships.</p>
+<pre><code>class Animal { void breathe() {...} }
+class Dog extends Animal { void bark() {...} }
+// Dog "is-a" Animal</code></pre>
+
+<h3>3. Polymorphism</h3>
+<p>One name, many forms. Two flavors:</p>
+<ul>
+  <li><strong>Compile-time (overloading):</strong> same method name, different parameters.</li>
+  <li><strong>Runtime (overriding):</strong> subclass redefines a parent method. Decided at runtime.</li>
+</ul>
+<pre><code>Animal a = new Dog();
+a.makeSound();   // calls Dog's version, not Animal's</code></pre>
+
+<h3>4. Abstraction</h3>
+<p>Show what a thing does, not how. Achieved via abstract classes and interfaces. Driving a car — you turn the wheel, you don't think about hydraulics.</p>
+
+
+<h2 id="solid" data-num="Chapter 27">SOLID Principles</h2>
+
+<p>Five principles that make OOP code clean and maintainable. Asked in almost every LLD interview.</p>
+
+<h3>S — Single Responsibility</h3>
+<p>A class should have one and only one reason to change. <code>InvoicePrinter</code> shouldn't also save to DB.</p>
+
+<h3>O — Open/Closed</h3>
+<p>Classes should be open for extension, closed for modification. Add new payment methods by creating new classes, not by editing existing ones with <code>if/else</code>.</p>
+
+<h3>L — Liskov Substitution</h3>
+<p>You should be able to replace a parent class with any of its subclasses without breaking behavior. If <code>Square extends Rectangle</code> but <code>setWidth</code> also changes height, it breaks code expecting a Rectangle.</p>
+
+<h3>I — Interface Segregation</h3>
+<p>Don't force classes to implement methods they don't need. Prefer many small interfaces over one fat one.</p>
+
+<h3>D — Dependency Inversion</h3>
+<p>Depend on abstractions, not on concrete classes. Your <code>OrderService</code> should depend on <code>PaymentProcessor</code> (interface), not on <code>StripeProcessor</code> directly.</p>
+
+<div class="example">
+  <div class="example-title">Why SOLID matters</div>
+  <p>SOLID code is easier to test, easier to change, and easier to onboard a new engineer to. Every design pattern below is essentially a recipe for following SOLID.</p>
+</div>
+
+
+<h2 id="uml" data-num="Chapter 28">UML Diagrams</h2>
+
+<p>UML (Unified Modeling Language) is a visual notation for object-oriented systems. The two diagrams you'll be asked to draw:</p>
+
+<h3>Class Diagram</h3>
+<p>Shows classes, their attributes, methods, and relationships:</p>
+<ul>
+  <li><strong>Association</strong> — uses (line)</li>
+  <li><strong>Aggregation</strong> — has-a, weak (hollow diamond). Department has Professors; if Department closes, Professors still exist.</li>
+  <li><strong>Composition</strong> — owns, strong (filled diamond). House has Rooms; close the house, rooms vanish.</li>
+  <li><strong>Inheritance</strong> — is-a (open arrow)</li>
+  <li><strong>Realization</strong> — implements interface (dashed arrow)</li>
+</ul>
+
+<h3>Sequence Diagram</h3>
+<p>Shows the order of method calls between objects over time. Used to depict flows like "user places an order".</p>
+
+
+<!-- =========== CREATIONAL =========== -->
+<h2 id="creational" data-num="Chapter 29">Creational Design Patterns</h2>
+<p>Patterns for object creation. They abstract the instantiation process.</p>
+
+<h3>1. Singleton</h3>
+<p>Ensure a class has only one instance. Use for config, logging, DB connection pool.</p>
+<pre><code>class Logger {
+    private static Logger instance;
+    private Logger() {}
+    public static synchronized Logger getInstance() {
+        if (instance == null) instance = new Logger();
+        return instance;
+    }
+}</code></pre>
+
+<h3>2. Factory Method</h3>
+<p>Define an interface for creating an object, let subclasses decide which class to instantiate.</p>
+<pre><code>interface Shape { void draw(); }
+class ShapeFactory {
+    Shape create(String type) {
+        if (type.equals("circle"))  return new Circle();
+        if (type.equals("square"))  return new Square();
+        throw new IllegalArgumentException();
+    }
+}</code></pre>
+
+<h3>3. Abstract Factory</h3>
+<p>Factory of factories. Produce families of related objects without specifying concrete classes. (E.g., a <code>UIFactory</code> that returns either Mac or Windows widgets.)</p>
+
+<h3>4. Builder</h3>
+<p>Construct complex objects step-by-step. Avoids constructors with 10 parameters.</p>
+<pre><code>Pizza p = new Pizza.Builder()
+            .size("L")
+            .cheese(true)
+            .topping("mushroom")
+            .build();</code></pre>
+
+<h3>5. Prototype</h3>
+<p>Create new objects by copying an existing one (cloning). Useful when creation is expensive.</p>
+
+
+<!-- =========== STRUCTURAL =========== -->
+<h2 id="structural" data-num="Chapter 30">Structural Design Patterns</h2>
+<p>Patterns about composing classes and objects into larger structures.</p>
+
+<h3>1. Adapter</h3>
+<p>Make two incompatible interfaces work together — like a power-plug adapter.</p>
+<pre><code>// Existing: MediaPlayer plays mp3
+// Need: play mp4
+class Mp4Adapter implements MediaPlayer {
+    Mp4Player player = new Mp4Player();
+    public void play(String file) { player.playMp4(file); }
+}</code></pre>
+
+<h3>2. Decorator</h3>
+<p>Add new behavior to an object dynamically without changing its class. Java's I/O streams use this everywhere.</p>
+<pre><code>Coffee c = new Coffee();
+c = new MilkDecorator(c);
+c = new SugarDecorator(c);
+c.cost();  // base + milk + sugar</code></pre>
+
+<h3>3. Facade</h3>
+<p>Provide a simple interface to a complex subsystem. Like a hotel concierge — you don't talk to housekeeping, laundry, and the kitchen separately.</p>
+
+<h3>4. Composite</h3>
+<p>Treat individual objects and groups of objects uniformly. Used for tree structures — file system, UI components.</p>
+
+<h3>5. Proxy</h3>
+<p>A stand-in for another object — for lazy loading, access control, caching, logging.</p>
+
+<h3>6. Bridge</h3>
+<p>Decouple abstraction from implementation so both can vary independently. E.g., <code>RemoteControl</code> (abstraction) and <code>Device</code> (implementation) evolve separately.</p>
+
+<h3>7. Flyweight</h3>
+<p>Share common state across many objects to save memory. Used in text editors where each character object shares font/formatting data.</p>
+
+
+<!-- =========== BEHAVIORAL =========== -->
+<h2 id="behavioral" data-num="Chapter 31">Behavioral Design Patterns</h2>
+<p>Patterns about communication between objects.</p>
+
+<h3>1. Observer</h3>
+<p>One-to-many dependency: when one object changes, all observers are notified. Used in event systems, pub/sub.</p>
+<pre><code>// YouTube channel notifies all subscribers when new video posted
+channel.subscribe(user1);
+channel.subscribe(user2);
+channel.notifyAll(newVideo);</code></pre>
+
+<h3>2. Strategy</h3>
+<p>Define a family of algorithms, encapsulate each, make them interchangeable at runtime.</p>
+<pre><code>PaymentStrategy s = isInternational
+    ? new PayPalStrategy()
+    : new UpiStrategy();
+checkout.pay(s, 100);</code></pre>
+
+<h3>3. Command</h3>
+<p>Encapsulate a request as an object. Enables undo, queuing, logging. Used in text editors (each keystroke is a command).</p>
+
+<h3>4. State</h3>
+<p>Allow an object to change behavior when its state changes. Like a traffic light cycling Red → Green → Yellow.</p>
+
+<h3>5. Template Method</h3>
+<p>Define the skeleton of an algorithm in a base class, let subclasses override specific steps. <code>prepareDrink()</code> has steps; <code>Tea</code> and <code>Coffee</code> override the brewing step.</p>
+
+<h3>6. Iterator</h3>
+<p>Access elements of a collection sequentially without exposing its internal structure. Java's <code>Iterator&lt;T&gt;</code>.</p>
+
+<h3>7. Chain of Responsibility</h3>
+<p>Pass a request along a chain of handlers; each decides to handle it or pass on. Used in middleware (auth → logging → cache → controller).</p>
+
+<h3>8. Mediator</h3>
+<p>Define an object that encapsulates how a set of objects interact. Air traffic control mediates between planes so they don't talk directly.</p>
+
+<h3>9. Memento</h3>
+<p>Capture an object's state so it can be restored later. Implements Ctrl+Z.</p>
+
+<h3>10. Visitor</h3>
+<p>Add new operations to a class hierarchy without modifying the classes. Used in compilers for AST traversal.</p>
+
+<hr class="section-break"/>
+
+<!-- ================================================== -->
+<!-- PART 4: FAMOUS HLD PROBLEMS                        -->
+<!-- ================================================== -->
+
+<h2 id="url-shortener" data-num="Chapter 32">Design a URL Shortener (bit.ly)</h2>
+
+<h4>Requirements</h4>
+<ul>
+  <li>Shorten a long URL into a 7-character code.</li>
+  <li>Redirect short → long in &lt;100ms.</li>
+  <li>Handle 100M new URLs/month, 10:1 read:write ratio.</li>
+  <li>Codes should be hard to guess.</li>
+</ul>
+
+<h4>Capacity</h4>
+<p>100M / 30 / 86400 ≈ 40 writes/sec; 400 reads/sec. Over 5 years → 6 billion URLs. Each row ~500 bytes → ~3 TB storage.</p>
+
+<h4>Short code generation — two approaches</h4>
+<ol>
+  <li><strong>Hash-based:</strong> MD5(longUrl) → take first 7 chars (Base62 encoded). Handle collisions by appending a salt.</li>
+  <li><strong>Counter + Base62:</strong> Use a distributed counter (like a Snowflake ID). Convert decimal to Base62 → 7 chars give 62⁷ ≈ 3.5 trillion combinations.</li>
+</ol>
+
+<h4>Architecture</h4>
+<div class="diagram"> Client → CDN → LB → App Servers
+                       │
+                       ├─→ Redis (short→long cache)
+                       └─→ Sharded DB (Cassandra/MySQL)</div>
+
+<h4>Reads</h4>
+<p>GET /<code>abc1234</code> → app checks Redis first (hot URLs) → 90% cache hit → DB fallback. Use 301 (permanent) redirect; browsers cache it.</p>
+
+<h4>Trade-offs</h4>
+<p>Counter approach gives predictable IDs (security risk for guessing). Hash approach has collisions but is unpredictable. Use a hybrid in production.</p>
+
+
+<h2 id="twitter" data-num="Chapter 33">Design Twitter / News Feed</h2>
+
+<h4>The core question</h4>
+<p>How does Twitter show you a feed of tweets from people you follow, instantly, when each user follows thousands?</p>
+
+<h3>Two approaches</h3>
+
+<h4>1. Pull model (Fan-out on read)</h4>
+<p>When user opens feed, query all followees' tweets, merge, sort by time. Cheap writes, expensive reads. Bad for users who follow 5000 people.</p>
+
+<h4>2. Push model (Fan-out on write)</h4>
+<p>When user A tweets, write the tweet into the inbox of every follower. Reads are instant. Bad for celebrities — Justin Bieber would need 300M inserts per tweet.</p>
+
+<h4>3. Hybrid (what Twitter actually does)</h4>
+<p>Push for normal users. Pull for celebrities. When you open feed, merge your pre-computed inbox with on-the-fly pulls from celebrities you follow.</p>
+
+<h4>Architecture</h4>
+<div class="diagram">Tweet → API → Tweet Service → Cassandra (tweets)
+                              │
+                              └→ Kafka → Fanout Service
+                                          │
+                                          └→ Redis (per-user timeline)
+Feed read → Timeline Service → Redis → Merge with celebrity pull</div>
+
+<h4>Key components</h4>
+<ul>
+  <li>Tweets stored in <strong>Cassandra</strong>, partitioned by user_id.</li>
+  <li>Each user's timeline kept as a Redis list of tweet IDs (last 800).</li>
+  <li>Media on S3 + CDN.</li>
+  <li>Search via Elasticsearch.</li>
+</ul>
+
+
+<h2 id="chat" data-num="Chapter 34">Design WhatsApp / Chat</h2>
+
+<h4>Functional needs</h4>
+<ul>
+  <li>1:1 messaging, group chats</li>
+  <li>Online/last-seen status</li>
+  <li>Read receipts</li>
+  <li>Media (photo, video)</li>
+  <li>Push notifications when offline</li>
+</ul>
+
+<h4>Connection model</h4>
+<p>Each user maintains a persistent <strong>WebSocket</strong> connection to a "Chat Server". On message, server routes it via a message broker (Kafka) to the recipient's chat server, which pushes it down their WebSocket.</p>
+
+<div class="diagram">User A ── WS ──→ Chat Server 1
+                      │
+                  Kafka topic
+                      │
+User B ←── WS ── Chat Server 2</div>
+
+<h4>If recipient offline</h4>
+<p>Message stored in a per-user inbox in Cassandra. When user reconnects → fetch all undelivered messages → deliver → mark delivered.</p>
+
+<h4>Online presence</h4>
+<p>Heartbeat every 10 seconds. No heartbeat for 30s → mark offline. Status changes pushed via pub/sub.</p>
+
+<h4>Read receipts</h4>
+<p>Client sends ACK when message displayed. Server updates message state (sent → delivered → read).</p>
+
+<h4>Media</h4>
+<p>Client uploads to blob storage (S3), gets URL, sends URL in the chat message. Receivers download from CDN.</p>
+
+<h4>End-to-end encryption</h4>
+<p>Signal Protocol — keys exchanged between clients; server only sees ciphertext. Servers never store decryption keys.</p>
+
+
+<h2 id="uber" data-num="Chapter 35">Design Uber / Ride-share</h2>
+
+<h4>Core challenge</h4>
+<p>Match nearby drivers to riders in real time at city scale.</p>
+
+<h4>Location updates</h4>
+<p>Each driver sends GPS coords every 4 seconds via WebSocket. Stored in an in-memory geospatial DB (Redis GEO or QuadTree).</p>
+
+<h4>Geo-sharding</h4>
+<p>Divide the world into a grid (using Google's S2 cells or QuadTree). Each cell handled by a server. When a rider requests a ride, query nearby cells for drivers.</p>
+
+<h4>Architecture</h4>
+<div class="diagram">Driver app ──→ Location Service ──→ Redis GEO
+                                       ↑
+Rider request → Dispatch ──────────────┘
+                  │
+                  └→ Match driver (closest k drivers, ETA, surge)
+                  └→ Notify driver via WebSocket
+                  └→ On accept → Trip Service
+                                  │
+                                  └→ Kafka (events)
+                                  └→ Payment, ETA, Analytics</div>
+
+<h4>Components</h4>
+<ul>
+  <li><strong>Location Service:</strong> ingests driver pings.</li>
+  <li><strong>Dispatch Service:</strong> matching algorithm. Considers distance, driver rating, surge pricing.</li>
+  <li><strong>Trip Service:</strong> manages trip state machine (requested → accepted → started → ended).</li>
+  <li><strong>Payment Service:</strong> async after ride.</li>
+  <li><strong>Notification Service:</strong> push notifications via FCM/APNS.</li>
+</ul>
+
+
+<h2 id="netflix" data-num="Chapter 36">Design Netflix / Video Streaming</h2>
+
+<h4>Three big challenges</h4>
+<ol>
+  <li>Storing petabytes of video.</li>
+  <li>Delivering it smoothly to 200M users worldwide.</li>
+  <li>Personalizing recommendations.</li>
+</ol>
+
+<h4>Upload &amp; encoding pipeline</h4>
+<p>Raw video → S3 → encoded into multiple resolutions (240p, 480p, 720p, 1080p, 4K) and multiple codecs (H.264, H.265, VP9). Each chunked into small ~10-second segments. Result: thousands of files per original video.</p>
+
+<h4>Streaming protocol</h4>
+<p><strong>Adaptive Bitrate Streaming</strong> (HLS / DASH). Player downloads a manifest, then fetches 10-sec chunks. If network slows, it switches to a lower-quality chunk seamlessly.</p>
+
+<h4>CDN</h4>
+<p>Netflix runs its own CDN — <strong>Open Connect</strong>. Servers physically placed inside ISP datacenters. 95% of traffic served from within your ISP's network.</p>
+
+<h4>Recommendations</h4>
+<p>Offline ML pipeline (Spark / TensorFlow) processes user watch history nightly. Output: ranked list of titles per user, stored in Cassandra. The homepage fetches these pre-computed ranks instantly.</p>
+
+<h4>Watch state</h4>
+<p>Position in the video saved every 30 seconds to a key-value store, so you can resume on any device.</p>
+
+<hr class="section-break"/>
+
+<!-- ================================================== -->
+<!-- PART 5: FAMOUS LLD PROBLEMS                        -->
+<!-- ================================================== -->
+
+<h2 id="parking" data-num="Chapter 37">LLD: Parking Lot</h2>
+
+<h4>Requirements</h4>
+<ul>
+  <li>Multi-floor lot.</li>
+  <li>Slot types: Bike, Car, Truck.</li>
+  <li>Ticket on entry, payment on exit (hourly fare).</li>
+  <li>Multiple entry/exit gates.</li>
+</ul>
+
+<h4>Classes</h4>
+<pre><code>enum VehicleType { BIKE, CAR, TRUCK }
+enum SlotType    { BIKE, CAR, TRUCK }
+
+class Vehicle {
+    String licensePlate;
+    VehicleType type;
+}
+
+abstract class ParkingSlot {
+    String id;
+    SlotType type;
+    boolean occupied;
+    Vehicle vehicle;
+    abstract boolean canFit(Vehicle v);
+}
+
+class BikeSlot extends ParkingSlot { ... }
+class CarSlot  extends ParkingSlot { ... }
+
+class ParkingFloor {
+    int floorNumber;
+    List&lt;ParkingSlot&gt; slots;
+    ParkingSlot findFreeSlot(VehicleType t);
+}
+
+class ParkingLot {
+    List&lt;ParkingFloor&gt; floors;
+    Map&lt;String, Ticket&gt; activeTickets;
+
+    Ticket park(Vehicle v);
+    double unpark(String ticketId);
+}
+
+class Ticket {
+    String id;
+    Vehicle vehicle;
+    ParkingSlot slot;
+    LocalDateTime entryTime;
+}
+
+interface FareStrategy {
+    double calculate(LocalDateTime entry, LocalDateTime exit, VehicleType t);
+}</code></pre>
+
+<h4>Patterns used</h4>
+<ul>
+  <li><strong>Strategy</strong> — FareStrategy for different pricing models.</li>
+  <li><strong>Factory</strong> — to create slot/vehicle objects.</li>
+  <li><strong>Singleton</strong> — ParkingLot instance.</li>
+</ul>
+
+
+<h2 id="elevator" data-num="Chapter 38">LLD: Elevator System</h2>
+
+<h4>Requirements</h4>
+<ul>
+  <li>Building with N floors, M elevators.</li>
+  <li>Up/Down buttons on each floor; floor buttons inside elevator.</li>
+  <li>Efficient dispatcher — minimize wait time.</li>
+</ul>
+
+<h4>Classes</h4>
+<pre><code>enum Direction { UP, DOWN, IDLE }
+enum ElevatorState { MOVING, STOPPED, OUT_OF_SERVICE }
+
+class Elevator {
+    int id;
+    int currentFloor;
+    Direction direction;
+    ElevatorState state;
+    TreeSet&lt;Integer&gt; upRequests   = new TreeSet&lt;&gt;();
+    TreeSet&lt;Integer&gt; downRequests = new TreeSet&lt;&gt;(Collections.reverseOrder());
+
+    void addRequest(int floor);
+    void step();   // advance one floor
+}
+
+class ElevatorController {
+    List&lt;Elevator&gt; elevators;
+    void requestElevator(int floor, Direction dir);
+    Elevator pickBestElevator(int floor, Direction dir);
+}
+
+class Floor {
+    int number;
+    Button up, down;
+}</code></pre>
+
+<h4>Algorithm — LOOK (the real one used)</h4>
+<p>Elevator goes up servicing all up-requests above it, then reverses and services all down-requests below it. Much better than naïve FIFO.</p>
+
+<h4>Patterns used</h4>
+<ul>
+  <li><strong>State</strong> — elevator's behavior changes by state.</li>
+  <li><strong>Command</strong> — each button press is a request command.</li>
+  <li><strong>Observer</strong> — elevator notifies display panels when floor changes.</li>
+</ul>
+
+
+<h2 id="splitwise" data-num="Chapter 39">LLD: Splitwise</h2>
+
+<h4>Requirements</h4>
+<ul>
+  <li>Track expenses between users.</li>
+  <li>Split equally, by exact amounts, or by percentage.</li>
+  <li>Show simplified "who owes whom".</li>
+</ul>
+
+<h4>Classes</h4>
+<pre><code>class User {
+    String id, name, email;
+}
+
+class Group {
+    String id, name;
+    List&lt;User&gt; members;
+    List&lt;Expense&gt; expenses;
+}
+
+enum SplitType { EQUAL, EXACT, PERCENTAGE }
+
+class Expense {
+    String id;
+    String description;
+    double amount;
+    User paidBy;
+    List&lt;Split&gt; splits;
+    SplitType type;
+}
+
+abstract class Split {
+    User user;
+    double amount;
+}
+class EqualSplit      extends Split {}
+class ExactSplit      extends Split {}
+class PercentageSplit extends Split { double percent; }
+
+class BalanceSheet {
+    // balances[A][B] = amount A owes B
+    Map&lt;User, Map&lt;User, Double&gt;&gt; balances;
+
+    void addExpense(Expense e);
+    void showBalances();
+}</code></pre>
+
+<h4>Patterns used</h4>
+<ul>
+  <li><strong>Strategy</strong> — different split calculation strategies.</li>
+  <li><strong>Factory</strong> — create Split objects based on SplitType.</li>
+</ul>
+
+<hr class="section-break"/>
+
+<!-- ================================================== -->
+<!-- FINAL CHECKLIST                                    -->
+<!-- ================================================== -->
+
+<h2 id="checklist" data-num="Chapter 40">Final Interview Checklist</h2>
+
+<div class="callout">
+  <div class="callout-title">Before the interview</div>
+  <p>Memorize the back-of-envelope numbers in Chapter 04. Practice drawing the headline diagram (CDN → LB → App → Cache → DB → Queue) until you can do it in 30 seconds.</p>
+</div>
+
+<h4>During the interview — the 10 commandments</h4>
+<ol>
+  <li>Don't jump into solutions. Ask clarifying questions first.</li>
+  <li>Always confirm scale before designing (DAU, QPS, storage).</li>
+  <li>Draw as you talk — don't go silent.</li>
+  <li>Start simple, then scale. Single server first, then introduce caches, queues, replicas.</li>
+  <li>Name your components precisely (Redis, Kafka, Cassandra — not "a database").</li>
+  <li>Mention trade-offs. <em>"I'm choosing Cassandra over MongoDB because we need write-heavy and partition tolerance."</em></li>
+  <li>Plan for failure. What if the cache dies? What if a region goes down?</li>
+  <li>Think about consistency. Strong? Eventual? Why?</li>
+  <li>Discuss monitoring — metrics, logs, alerts.</li>
+  <li>Manage time. Don't spend 30 minutes on schema and skip the architecture.</li>
+</ol>
+
+<h4>Red flags to avoid</h4>
+<ul>
+  <li>Saying "I'd use a database" without naming which kind and why.</li>
+  <li>Designing for 10 users when the question says 100M.</li>
+  <li>Ignoring read:write ratio.</li>
+  <li>Forgetting CAP — every interviewer asks about consistency.</li>
+  <li>Adding microservices when not needed.</li>
+  <li>No mention of caching layer.</li>
+</ul>
+
+<h4>Phrases that impress</h4>
+<ul>
+  <li><em>"Let me first clarify the requirements before estimating."</em></li>
+  <li><em>"Given the read:write ratio of X:1, I'll optimize the read path with..."</em></li>
+  <li><em>"There's a trade-off here — we can go AP for availability or CP for consistency. Given the use case, I'd choose..."</em></li>
+  <li><em>"This is a single point of failure — let me add redundancy."</em></li>
+  <li><em>"I'd shard by user_id using consistent hashing to allow elastic scaling."</em></li>
+</ul>
+
+<div class="tldr">
+  <div class="tldr-title">Final word</div>
+  <p>System design isn't memorization. It's a conversation about <em>trade-offs</em>. Master these 40 chapters and you'll have the vocabulary to hold that conversation with any interviewer at any MNC. Now go ship it.</p>
+</div>
+
+<footer>
+  System Design Notes · Complete Interview Companion · Crafted with care · 2026 Edition
+</footer>
+
+</main>
+</div>
+
+</body>
+</html>
