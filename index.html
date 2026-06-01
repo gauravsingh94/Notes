@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaurav's Notes Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #060810;
+      --surface: #0c0f1a;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(139,168,255,0.35);
+      --text-primary: #eef0f8;
+      --text-muted: #7a82a8;
+      --text-dim: #404668;
+      --accent-blue: #8baeff;
+      --accent-violet: #b89cff;
+      --accent-teal: #7ee8d5;
+      --accent-amber: #ffd07a;
+      --accent-rose: #ff9eb5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── Ambient glow orbs ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      animation: orb-fade-in 2s ease forwards;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      top: -200px; left: -200px;
+      background: radial-gradient(circle, rgba(100, 130, 255, 0.12) 0%, transparent 70%);
+      animation-delay: 0.3s;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      bottom: -100px; right: -100px;
+      background: radial-gradient(circle, rgba(180, 150, 255, 0.1) 0%, transparent 70%);
+      animation-delay: 0.6s;
+    }
+    .orb-3 {
+      width: 300px; height: 300px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(100, 220, 200, 0.06) 0%, transparent 70%);
+      animation-delay: 0.9s;
+    }
+
+    @keyframes orb-fade-in {
+      to { opacity: 1; }
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 80px 28px 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slide-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-blue);
+      margin-bottom: 24px;
+    }
+
+    .eyebrow-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      animation: pulse 2.5s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .header h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-violet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .header p {
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 460px;
+    }
+
+    .subject-count {
+      font-size: 12px;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fade-in 1s ease 0.5s forwards;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    /* Card base */
+    .card {
+      text-decoration: none;
+      color: inherit;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .card.visible {
+      animation: slide-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Shimmer line on top */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--card-accent, var(--accent-blue)) 50%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Inner glow */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, var(--card-glow, rgba(139,174,255,0.06)) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--card-accent, var(--border-hover));
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--card-accent, rgba(139,174,255,0.15));
+    }
+
+    .card:hover::before,
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    /* Card sizes */
+    .card-wide { grid-column: span 8; }
+    .card-narrow { grid-column: span 4; }
+    .card-half { grid-column: span 6; }
+    .card-full { grid-column: span 12; }
+
+    /* Card theme colors */
+    .card-java   { --card-accent: var(--accent-amber);  --card-glow: rgba(255,210,120,0.07); }
+    .card-sql    { --card-accent: var(--accent-teal);   --card-glow: rgba(126,232,213,0.07); }
+    .card-nlp    { --card-accent: var(--accent-violet); --card-glow: rgba(184,156,255,0.07); }
+    .card-sys    { --card-accent: var(--accent-blue);   --card-glow: rgba(139,174,255,0.07); }
+    .card-ai     { --card-accent: var(--accent-rose);   --card-glow: rgba(255,158,181,0.07); }
+
+    /* Card inner elements */
+    .card-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--card-accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--card-accent);
+    }
+
+    .card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-wide h3 { font-size: 2.1rem; }
+
+    .card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 24px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 11px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.02);
+      transition: color 0.25s, border-color 0.25s;
+    }
+
+    .card:hover .tag {
+      color: var(--card-accent);
+      border-color: var(--card-accent);
+      opacity: 0.7;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 28px;
+      right: 28px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover .card-arrow {
+      border-color: var(--card-accent);
+      color: var(--card-accent);
+      transform: rotate(45deg);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* Large number accent on wide card */
+    .card-number {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.025);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      opacity: 0;
+      animation: fade-in 1s ease 1.2s forwards;
+    }
+
+    .footer-sig {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--text-dim);
+    }
+
+    .footer-sig span {
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-muted); }
+
+    /* ── Animations ── */
+    @keyframes slide-up {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in {
+      to { opacity: 1; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .wrapper { padding: 60px 20px 60px; }
+      .header { margin-bottom: 52px; }
+      .card-wide, .card-narrow, .card-half { grid-column: span 12; }
+      .header h1 { font-size: 2.8rem; }
+      .card-number { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="wrapper">
+    <header class="header">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Knowledge Archive
+      </div>
+      <h1>Gaurav's <em>Notes</em><br>Library</h1>
+      <div class="header-meta">
+        <p>Curated technical notes spanning core languages, data systems, AI architecture, and engineering design.</p>
+        <span class="subject-count">5 subjects · ongoing</span>
+      </div>
+    </header>
+
+    <div class="divider"></div>
+
+    <div class="grid" id="grid">
+
+      <!-- Java — wide -->
+      <a class="card card-wide card-java" href="java-language-notes.html">
+        <span class="card-number">01</span>
+        <div class="card-label">Language</div>
+        <h3>Java Language<br>Notes</h3>
+        <p>Core Java internals, object-oriented paradigms, collections framework, streams API, exception handling, and structured interview prep.</p>
+        <div class="card-tags">
+          <span class="tag">OOP</span>
+          <span class="tag">Collections</span>
+          <span class="tag">Streams</span>
+          <span class="tag">Concurrency</span>
+          <span class="tag">JVM</span>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <!-- SQL — narrow -->
+      <a class="card card-narrow card-sql" href="sql-notes.html">
+        <span class="card-number">02</span>
+        <div class="card-label">Database</div>
+        <h3>SQL<br>Notes</h3>
+        <p>Joins, normalization, indexing strategies, transactions, and database fundamentals.</p>
+        <div class="card-tags">
+          <span class="tag">Joins</span>
+          <span class="tag">Indexes</span>
+          <span class="tag">ACID</span>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <!-- NLP — narrow -->
+      <a class="card card-narrow card-nlp" href="nlp_deep_learning_notes.html">
+        <span class="card-number">03</span>
+        <div class="card-label">AI / ML</div>
+        <h3>NLP & Deep<br>Learning</h3>
+        <p>Transformers, embeddings, neural architectures, large language models and NLP fundamentals.</p>
+        <div class="card-tags">
+          <span class="tag">Transformers</span>
+          <span class="tag">LLMs</span>
+          <span class="tag">Embeddings</span>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <!-- System Design — wide -->
+      <a class="card card-wide card-sys" href="system-design-notes.html">
+        <span class="card-number">04</span>
+        <div class="card-label">Architecture</div>
+        <h3>System Design</h3>
+        <p>Scalability patterns, distributed databases, caching layers, load balancing, message queues, and architecture interview frameworks for building resilient systems at scale.</p>
+        <div class="card-tags">
+          <span class="tag">Scalability</span>
+          <span class="tag">Caching</span>
+          <span class="tag">Load Balancing</span>
+          <span class="tag">Microservices</span>
+          <span class="tag">CAP Theorem</span>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <!-- LangChain — full -->
+      <a class="card card-full card-ai" href="LangChain_Codex.html">
+        <span class="card-number">05</span>
+        <div class="card-label">Applied AI</div>
+        <h3>LangChain & AI Application Notes</h3>
+        <p>LangChain framework internals, retrieval-augmented generation, autonomous agents, vector database integration, prompt engineering patterns, and end-to-end AI application development.</p>
+        <div class="card-tags">
+          <span class="tag">LangChain</span>
+          <span class="tag">RAG</span>
+          <span class="tag">Agents</span>
+          <span class="tag">Vector DBs</span>
+          <span class="tag">Prompting</span>
+          <span class="tag">LCEL</span>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+    </div>
+
+    <footer>
+      <p class="footer-sig">Made with care by <span>Gaurav Singh</span></p>
+      <div class="footer-links">
+        <a href="#">Top</a>
+        <a href="#">About</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const delays = [0.4, 0.55, 0.65, 0.75, 0.9];
+    cards.forEach((card, i) => {
+      card.style.animationDelay = (delays[i] || 0.4 + i * 0.1) + 's';
+      card.classList.add('visible');
+    });
+  </script>
+</body>
+</html>
